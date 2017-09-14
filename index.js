@@ -17,9 +17,10 @@ app.get('/groups', function (req, res) {
     res.send(data);
 });
 
-app.get('/folder/:groupId', function (req, res) {
+app.get('/folder?:groupId', function (req, res) {
 
-    console.log(req.params["groupId"]);
+    console.log("=== Group ID ===");
+    console.log('groupId: ', req.query["groupId"]);
 
     const data = {"items":[
             {"creator":7,"lastModifiedBy":1150,"owner":7,"id":1192,"itemType":"FOLDER","title":"Group Root","description":null,"groups":[1183],"userList":[],"globalReference":false,"parentFolder":null,"path":"","readOnly":false,"createdAt":1482863439269,"lastModifiedAt":1502139032601},
@@ -34,9 +35,10 @@ app.get('/folder/:groupId', function (req, res) {
     res.send(data);
 });
 
-app.get('/:folderId/attachment', function (req, res) {
+app.get('/folder/:folderId/attachment', function (req, res) {
 
-    console.log('attachment: ', req.params["folderId"]);
+    console.log("=== Attachment ===");
+    console.log('folderId: ', req.params["folderId"]);
 
     const data = {
         "1192": {total: 0, items: [], limit: 0, offset: 0},
@@ -59,7 +61,10 @@ app.get('/:folderId/attachment', function (req, res) {
     res.send(data[req.params["folderId"]]);
 });
 
-app.get('/content', function (req, res) {
+app.get('/folder/:parentId/attachment/:documentId/content', function (req, res) {
+    console.log('=== Content ====');
+    console.log('parentId: ', req.params["parentId"]);
+    console.log('documentId: ', req.params["documentId"]);
 
     // const data = '{"bookmark_name":"test Bookmark2","bookmark_data":"{\"version\":6,\"type\":\"BOTH\",\"position\":{\"center\":[270.5804443359375,31.079853225906053],\"zoom\":8},\"layers\":{\"HnP_hazards\":{\"isClustering\":true,\"opacity\":1},\"Est_Wind_Impacts_TAOS\":{\"isClustering\":false,\"opacity\":0.5},\"Est_Max_Storm_Surge_Heights_TAOS\":{\"isClustering\":false,\"opacity\":0.5},\"Est_Rainfall_TAOS\":{\"isClustering\":false,\"opacity\":0.5},\"TRMM1day\":{\"isClustering\":false,\"opacity\":0.25},\"Storm_Positions\":{\"isClustering\":false,\"opacity\":1},\"Storm_Segments\":{\"isClustering\":false,\"opacity\":1},\"cones5day\":{\"isClustering\":false,\"opacity\":0.5},\"cones3day\":{\"isClustering\":false,\"opacity\":0.5},\"Google_Hybrid\":{\"isClustering\":false,\"opacity\":1}}}","startup_flag":1,"create_date":1502884839639}';
 
@@ -72,5 +77,7 @@ app.get('/content', function (req, res) {
 });
 
 app.listen(8000, function () {
+	console.log('=======================');
 	console.log('Server running on 8000!');
+    console.log('=======================');
 });
