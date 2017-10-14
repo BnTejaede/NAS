@@ -1,0 +1,58 @@
+{
+    "groups": [
+        {
+            "identifier": "G1",
+            "name": "Public Standard Group 1",
+            "city": "Baltimore",
+            "country":"USA",
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut imperdiet, mauris eget consectetur lacinia, magna odio mollis risus, id aliquam dolor quam eu leo. Nam gravida blandit lacus, vitae lacinia enim faucibus vel. Nam diam velit, molestie a odio eu, dictum molestie odio."
+        },
+        {
+            "identifier": "G2",
+            "name": "Public Standard Group 2",
+            "city": "Baltimore",
+            "country":"USA",
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut imperdiet, mauris eget consectetur lacinia, magna odio mollis risus, id aliquam dolor quam eu leo. Nam gravida blandit lacus, vitae lacinia enim faucibus vel. Nam diam velit, molestie a odio eu, dictum molestie odio."
+        },
+        {
+            "identifier": "G3",
+            "name": "SEL Test for 8.2",
+            "city": "Minneapolis",
+            "country":"USA",
+            "description":"For use in load testing by Tom & Eric **** Do Not touch or add to this Group *****"
+        },
+        {
+            "identifier": "G4",
+            "name": "SEL Public",
+            "city": "Louisville",
+            "country": "USA",
+            "description": "A public group for Selenium automated testing"
+        }
+    ],
+    "scenes": [
+        {
+            "identifier": "S1",
+            "groupIdentifier": "G1",
+            "name": "Public Standard Scene 1",
+            "description": "A public scene, viewable by whoever"
+        },
+        {
+            "identifier": "S2",
+            "groupIdentifier": "G2",
+            "name": "Public Standard Scene 2",
+            "description": "A public scene, viewable by whoever"
+        },
+        {
+            "identifier": "S3",
+            "groupIdentifier": "G3",
+            "name": "SEL Test for 8.2",
+            "description":"For use in load testing by Tom & Eric **** Do Not touch or add to this Group *****"
+        },
+        {
+            "identifier": "S4",
+            "groupIdentifier": "G4",
+            "name": "SEL Public",
+            "description": "A public scene for Selenium automated testing"
+        }
+    ]
+}

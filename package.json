@@ -2,12 +2,17 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "name": "NAS",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.15.4"
+    "body-parser": "^1.18.2",
+    "express": "^4.15.4",
+    "mr": "^17.0.8",
+    "sequelize": "^4.13.8",
+    "sqlite3": "^3.1.13"
   }
 }

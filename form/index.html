@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>Main</title>
+
+    <style>
+        .Main {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #999;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            font-family: sans-serif;
+            padding: 50px;
+        }
+
+        .page {
+            display: none;
+        }
+
+        form {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            width: 600px;
+            background-color: #ddd;
+            margin-bottom: 50px;
+            border-radius: 3px;
+            padding: 12px;
+        }
+
+        h3 {
+            margin: 0;
+            padding: 8px 0px;
+        }
+
+        input,
+        select {
+            height: 30px;
+            margin-bottom: 5px;
+            font-size: 16px;
+            border-radius: 3px;
+        }
+
+        
+    </style>
+    <script type="text/javascript" src="logic.js"></script>
+</head>
+<body>
+    <div data-montage-id="main" class="Main">
+        <select>
+            <option value="group">Group</option>
+            <option value="scene">Scene</option>
+            <option value="version">Version</option>
+            <option value="figure">Figure</option>
+        </select>
+        <div id="group-page" class="page" style="display: block;">
+            <form action="../group" method="POST">
+                <h3>Create</h3>
+                <input type="text" name="name" placeholder="Name" value="Test Name"/>
+                <input type="text" name="description" placeholder="Description" value="A Description"/>
+                <input type="text" name="city" placeholder="City" value="A City"/>
+                <input type="text" name="country" placeholder="Country" value="A country"/>
+                <input type="submit" />
+            </form>
+            <form action="../group" method="PUT">
+                <h3>Edit</h3>
+                <input type="text" name="id" placeholder="ID" value="3"/>
+                <input type="text" name="name" placeholder="Name" value="Edit Name"/>
+                <input type="text" name="description" placeholder="Description" value="Edit Description"/>
+                <input type="text" name="city" placeholder="City" value="Edit City"/>
+                <input type="text" name="country" placeholder="Country" value="Edit Country"/>
+                <input type="submit" />
+            </form>
+        </div>
+        <div id="scene-page" class="page">
+            <form action="../group/${groupID}/scene" method="POST">
+                <h3>Create</h3>
+                <input type="text" name="groupID" placeholder="Group ID" value="2"/>
+                <input type="text" name="name" placeholder="Name" value="Test Name"/>
+                <input type="text" name="description" placeholder="Description" value="A Description"/>
+                <input type="submit" />
+            </form>
+            <form action="../group/${groupID}/scene" method="PUT">
+                <h3>Edit</h3>
+                <input type="text" name="groupID" placeholder="Group ID"/>
+                <input type="text" name="id" placeholder="ID" value="3"/>
+                <input type="text" name="name" placeholder="Name" value="Edit Name"/>
+                <input type="text" name="description" placeholder="Description" value="Edit Description"/>
+                <input type="submit" />
+            </form>
+        </div>
+        <div id="version-page" class="page">
+                
+        </div>
+        <div id="figure-page" class="page">
+                
+        </div>
+    </div>
+</body>
+</html>

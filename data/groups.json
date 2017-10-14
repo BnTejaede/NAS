@@ -1,0 +1,307 @@
+{
+    "groups": [
+        {
+            "identifier": "G1",
+            "name": "Public Standard Group 1",
+            "city": "Baltimore",
+            "country":"USA",
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut imperdiet, mauris eget consectetur lacinia, magna odio mollis risus, id aliquam dolor quam eu leo. Nam gravida blandit lacus, vitae lacinia enim faucibus vel. Nam diam velit, molestie a odio eu, dictum molestie odio."
+        },
+        {
+            "identifier": "G2",
+            "name": "Public Standard Group 2",
+            "city": "Baltimore",
+            "country":"USA",
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut imperdiet, mauris eget consectetur lacinia, magna odio mollis risus, id aliquam dolor quam eu leo. Nam gravida blandit lacus, vitae lacinia enim faucibus vel. Nam diam velit, molestie a odio eu, dictum molestie odio."
+        }
+    ],
+    "scenes": [
+        {
+            "identifier": "S1",
+            "groupIdentifier": "G1",
+            "name": "Public Standard Scene 1",
+            "description": "A public scene, viewable by whoever"
+        },
+        {
+            "identifier": "S2",
+            "groupIdentifier": "G2",
+            "name": "Public Standard Scene 2",
+            "description": "A public scene, viewable by whoever"
+        },
+        {
+            "identifier": "S3",
+            "groupIdentifier": "G1",
+            "name": "SEL Test for 8.2",
+            "description":"For use in load testing by Tom & Eric **** Do Not touch or add to this Group *****"
+        },
+        {
+            "identifier": "S4",
+            "groupIdentifier": "G2",
+            "name": "SEL Public",
+            "description": "A public scene for Selenium automated testing"
+        }
+    ],
+    "versions": [
+        {
+            "identifier": "V1",
+            "sceneIdentifier": "S1",
+            "name": "Version 1"
+        },
+        {
+            "identifier": "V2",
+            "sceneIdentifier": "S1",
+            "name": "Version 2"
+        },
+        {
+            "identifier": "V3",
+            "sceneIdentifier": "S2",
+            "name": "SEL Version Test for 8.2"
+        },
+        {
+            "identifier": "V4",
+            "sceneIdentifier": "S2",
+            "name": "SEL Public Version"
+        }
+    ],
+    "figures": [
+        {
+            "versionIdentifier": "V1",
+            "identifier": "F1",
+            "name": "Annotation",
+            "type": null,
+            "geometry": null,
+            "properties": ""
+        },
+        {
+            "versionIdentifier": "V1",
+            "identifier": "F2",
+            "name": "Circle",
+            "type": null,
+            "geometry": null,
+            "properties": ""
+        },
+        {
+            "versionIdentifier": "V1",
+            "identifier": "F3",
+            "name": "Image",
+            "type": null,
+            "geometry": null,
+            "properties": ""
+        },
+        {
+            "versionIdentifier": "V1",
+            "identifier": "F4",
+            "name": "Placemark",
+            "type": null,
+            "geometry": null,
+            "properties": ""
+        },
+        {
+            "versionIdentifier": "V1",
+            "identifier": "F5",
+            "name": "Polygon",
+            "type": null,
+            "geometry": null,
+            "properties": ""
+        },
+        {
+            "versionIdentifier": "V1",
+            "identifier": "F6",
+            "name": "Polyline",
+            "type": null,
+            "geometry": null,
+            "properties": ""
+        },
+        {
+            "versionIdentifier": "V1",
+            "identifier": "F7",
+            "name": "Rectangle",
+            "type": null,
+            "geometry": null,
+            "properties": ""
+        },
+        {
+            "parentIdentifier": "F2",
+            "versionIdentifier": "V1",
+            "type": 1,
+            "geometry": {
+                "type": "MultiPoint",
+                "coordinates": [
+                    [
+                        -85.01543078565658,
+                        13.295288986478354
+                    ],
+                    [
+                        -84.20244250440658,
+                        12.942202664011615
+                    ]
+                ]
+            },
+            "properties": {
+                "isResizable": true,
+                "dataURL": "",
+                "displayLabelBorder": true,
+                "displayDistanceLabels": false,
+                "displayDistanceTotal": false,
+                "displayMeasurementInLabel": false,
+                "displayNameInLabel": false,
+                "fillColor": "#000000",
+                "fillOpacity": 0.5,
+                "fontColor": "#000000",
+                "fontSize": 14,
+                "imageOpacity": 1,
+                "isFreeHand": false,
+                "isNewObject": false,
+                "labelStrokeColor": "#000000",
+                "labelStrokeOpacity": 1,
+                "labelStrokeWidth": 1,
+                "labelType": "buffer",
+                "preserveAspectRatio": false,
+                "radius": 96398.24002229769,
+                "isCenteredOnOrigin": false,
+                "strokeColor": "#000000",
+                "strokeOpacity": 1,
+                "strokeWidth": 2,
+                "units": "metric",
+                "type": 1,
+                "name": "Circle",
+                "description": "Circle Figure",
+                "bearing": 113.94159560082409
+            },
+            "identifier": "F8"
+        },
+        {
+            "parentIdentifier": "F1",
+            "versionIdentifier": "V1",
+            "type": 0,
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -83.30156359815658,
+                    14.914802921242211
+                ]
+            },
+            "properties": {
+                "isResizable": true,
+                "dataURL": "",
+                "displayLabelBorder": true,
+                "displayDistanceLabels": false,
+                "displayDistanceTotal": false,
+                "displayMeasurementInLabel": false,
+                "displayNameInLabel": false,
+                "fillColor": "#FFFFFF",
+                "fillOpacity": 1,
+                "fontColor": "#000000",
+                "fontSize": 14,
+                "imageOpacity": 1,
+                "isFreeHand": false,
+                "isNewObject": false,
+                "labelStrokeColor": "#000000",
+                "labelStrokeOpacity": 1,
+                "labelStrokeWidth": 1,
+                "labelType": "buffer",
+                "preserveAspectRatio": false,
+                "radius": 0,
+                "isCenteredOnOrigin": false,
+                "strokeColor": "#000000",
+                "strokeOpacity": 1,
+                "strokeWidth": 2,
+                "units": "metric",
+                "type": 0,
+                "name": "Annotation",
+                "description": "Default Text"
+            },
+            "identifier": "F9"
+        },
+        {
+            "parentIdentifier": "F6",
+            "versionIdentifier": "V1",
+            "type": 5,
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        -81.84038195753158,
+                        10.100569766796346
+                    ],
+                    [
+                        -81.63164172315658,
+                        10.208712076647943
+                    ],
+                    [
+                        -81.34599719190658,
+                        10.457299329599806
+                    ],
+                    [
+                        -81.21416125440658,
+                        10.6085162137133
+                    ],
+                    [
+                        -81.15922961378158,
+                        10.867570773148246
+                    ],
+                    [
+                        -81.22514758253158,
+                        11.050932119199741
+                    ],
+                    [
+                        -81.42290148878158,
+                        11.277278989483346
+                    ],
+                    [
+                        -81.98320422315658,
+                        11.697162214091223
+                    ],
+                    [
+                        -82.14799914503158,
+                        11.944488848485218
+                    ],
+                    [
+                        -82.09306750440658,
+                        12.170111865242141
+                    ],
+                    [
+                        -81.88432727003158,
+                        12.374082101259551
+                    ],
+                    [
+                        -81.63164172315658,
+                        12.524274239675279
+                    ]
+                ]
+            },
+            "properties": {
+                "isResizable": true,
+                "dataURL": "",
+                "displayLabelBorder": true,
+                "displayDistanceLabels": false,
+                "displayDistanceTotal": false,
+                "displayMeasurementInLabel": false,
+                "displayNameInLabel": false,
+                "fillColor": "#000000",
+                "fillOpacity": 0.5,
+                "fontColor": "#000000",
+                "fontSize": 14,
+                "imageOpacity": 1,
+                "isFreeHand": true,
+                "isNewObject": false,
+                "labelStrokeColor": "#000000",
+                "labelStrokeOpacity": 1,
+                "labelStrokeWidth": 1,
+                "labelType": "buffer",
+                "preserveAspectRatio": false,
+                "radius": 0,
+                "isCenteredOnOrigin": false,
+                "strokeColor": "#000000",
+                "strokeOpacity": 1,
+                "strokeWidth": 2,
+                "units": "metric",
+                "type": 5,
+                "name": "Polyline",
+                "description": "Polyline Figure",
+                "hasLabel": false
+            },
+            "identifier": "F10"
+        }
+    ]
+}
