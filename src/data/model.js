@@ -45,15 +45,39 @@ const Figure = db.define('figure', {
     properties: {
         type: Sequelize.STRING
     }
+},{
+    validate: {
+      bothTypeAndGeometryNullOrNeither() {
+          var hasType = this.type !== null,
+              hasGeometry = this.geometry !== null;
+        
+        if (hasType && !hasGeometry) {
+            console.log(this.type, this.geometry);
+            throw new Error("Figure with type must include geometry");
+        } else if (!hasType && hasGeometry) {
+            console.log(this.type, this.geometry);
+            throw new Error("Folder figure cannot include geometry");
+        }
+      }
+    },
+    hooks: {
+        beforeCreate: function (figure, options) {
+            if (figure.children) {
+                figure.children.forEach(function (child) {
+                    child.versionId = figure.versionId;
+                });
+            }
+        }
+    }
 });
 
 
 
 
 //Set up relationships
-Group.hasMany(Scene, {as: "scenes"});
-Scene.hasMany(Version, {as: "versions"});
-Version.hasMany(Figure, {as: "figures"});
+Group.hasMany(Scene, {as: "scenes", foreignKey: {allowNull: false}});
+Scene.hasMany(Version, {as: "versions", foreignKey: {allowNull: false}});
+Version.hasMany(Figure, {as: "figures", foreignKey: {allowNull: false}});
 Figure.hasMany(Figure, {as: { singular: "child", plural: "children" }, sourceKey: "id", foreignKey: "parentId"});
 
 

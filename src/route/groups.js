@@ -72,4 +72,6 @@ function mapProperties(object) {
     return properties;
 }
 
+
+
 module.exports = router;

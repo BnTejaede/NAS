@@ -42,11 +42,29 @@
         input,
         select {
             height: 30px;
+            margin: 0;
             margin-bottom: 5px;
             font-size: 16px;
             border-radius: 3px;
         }
 
+        label {
+            width: 100px;
+            margin-right: 10px;
+            text-align: right;
+            display: inline-block;
+        }
+
+        input {
+            display: inline-block;
+            min-width: 0;
+        }
+
+        fieldset {
+            border: none;
+            margin: 0;
+            padding: 0;
+        }
         
     </style>
     <script type="text/javascript" src="logic.js"></script>
@@ -59,7 +77,7 @@
             <option value="version">Version</option>
             <option value="figure">Figure</option>
         </select>
-        <div id="group-page" class="page" style="display: block;">
+        <div id="group-page" class="page" >
             <form action="../group" method="POST">
                 <h3>Create</h3>
                 <input type="text" name="name" placeholder="Name" value="Test Name"/>
@@ -96,10 +114,48 @@
             </form>
         </div>
         <div id="version-page" class="page">
-                
+            <form action="../group/${groupID}/scene/${sceneID}/version" method="POST">
+                <h3>Create</h3>
+                <input type="text" name="groupID" placeholder="Group ID" />
+                <input type="text" name="sceneID" placeholder="Scene ID" />
+                <input type="text" name="name" placeholder="Name" value="Test Name"/>
+                <input type="text" name="figures" placeholder="Figures" value=""/>
+                <input type="submit" />
+            </form>
+            <form action="../group/${groupID}/scene/${sceneID}/version" method="PUT">
+                <h3>Edit</h3>
+                <input type="text" name="groupID" placeholder="Group ID" />
+                <input type="text" name="sceneID" placeholder="Scene ID" />
+                <input type="text" name="id" placeholder="ID" />
+                <input type="text" name="name" placeholder="Name" value="Edit Name"/>
+                <input type="submit" />
+            </form>
         </div>
         <div id="figure-page" class="page">
-                
+            <form action="../group/${groupID}/scene/${sceneID}/version/${versionID}/figure" method="POST">
+                <h3>Create</h3>
+                <input type="text" name="groupID" placeholder="Group ID" />
+                <input type="text" name="sceneID" placeholder="Scene ID" />
+                <input type="text" name="versionID" placeholder="Version ID" />
+                <input type="text" name="parentID" placeholder="Parent ID" />
+                <input type="text" name="name" placeholder="Name" value="Figure Name"/>
+                <input type="text" name="type" placeholder="Type" />
+                <input type="text" name="geometry" placeholder="Geometry" />
+                <input type="text" name="properties" placeholder="Properties" />
+                <input type="submit" />
+            </form>
+            <form action="../group/${groupID}/scene/${sceneID}/version/${versionID}/figure" method="PUT">
+                <h3>Edit</h3>
+                <input type="text" name="groupID" placeholder="Group ID" />
+                <input type="text" name="sceneID" placeholder="Scene ID" />
+                <input type="text" name="versionID" placeholder="Version ID" />
+                <input type="text" name="parentID" placeholder="Parent ID" />
+                <input type="text" name="id" placeholder="ID" />
+                <input type="text" name="name" placeholder="Name" value="Figure Name"/>
+                <input type="text" name="geometry" placeholder="Geometry" />
+                <input type="text" name="properties" placeholder="Properties" />
+                <input type="submit" />
+            </form>   
         </div>
     </div>
 </body>

@@ -15,14 +15,36 @@ window.onload = function () {
     }
 
     select = document.querySelector("select");
-    currentPage = visiblePage();
+    
     select.addEventListener("change", function (event) {
-        currentPage.style.display = "";
-        currentPage = visiblePage();
-        currentPage.style.display = "block";
-        console.log("Select.addEventListener", select.value);
+        updateCurrentPage(select.value);
     });
+
+    window.onhashchange = function () {
+        updateCurrentPage(currentHash());
+    };
+
+    updateCurrentPage(currentHash());
 };
+
+function currentHash() {
+    return window.location.hash.substring(1);
+}
+
+function updateCurrentPage(value) {
+    var hash = currentHash();
+    if (value && hash !== value) {
+        window.location.hash = value;
+    }
+    if (value && select.value !== value) {
+        select.value = value;
+    }
+    if (currentPage) {
+        currentPage.style.display = "";
+    }
+    currentPage = visiblePage();
+    currentPage.style.display = "block";
+}
 
 function visiblePage () {
     var id = select.value + "-page";
@@ -49,8 +71,6 @@ function processForm(e) {
     // You must return false to prevent the default form behavior
     return false;
 }
-
-
 
 function parseProperties(form) {
     var inputs = form.querySelectorAll("input[type='text']"),

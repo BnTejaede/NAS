@@ -1,10 +1,8 @@
 const express = require('express');
 const app = express();
-const json_content = require("./August2.json");
 const groupsRouter = require("./src/route/groups");
-const scenesRouter = require("./src/route/scenes");
-const versionsRouter = require("./src/route/versions");
 const Sequelize = require("sequelize");
+const accessControl = require("./src/access-control");
 
 
 app.use("/group", groupsRouter);
@@ -28,9 +26,15 @@ const sequelize = new Sequelize('biosurvelliance', 'pdc', 'pdc', {
  */
   app.get('/hazards?:groupId', function (req, res) {
     
-        console.log("=== Group ID ===");
-        console.log('groupId: ', req.query["groupId"]);
+        // console.log("=== Group ID ===");
+        // console.log('groupId: ', req.query["groupId"]);
     
+        res.header("Access-Control-Allow-Origin", "http://localhost");
+        res.header("Access-Control-Allow-Credentials", "true");
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+        res.header("Content-Type", "application/json");
+        res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
+
         const data = [
             {"app_ID":0,"app_IDs":"","autoexpire":"Y","category_ID":"EVENT","charter_Uri":"","comment_Text":"HIGHWIND-ADVISORY-2017-26","create_Date":"1507209696762","creator":"D2P2","end_Date":"1507262400000","glide_Uri":"","hazard_ID":17052,"hazard_Name":"Highwind - Advisory (Hawaiian Islands)","last_Update":"1507209760742","latitude":21.5,"longitude":-156.0,"master_Incident_ID":"17.1507209655967.9","message_ID":"17.1507209655967","org_ID":-1,"severity_ID":"ADVISORY","snc_url":"http://snc.pdc.org/TEST/3c15bf46-28de-4032-825e-837c7ffa70a6/index.html","start_Date":"1507209300000","status":"A","type_ID":"HIGHWIND","update_Date":"1507209697793","update_User":null,"product_total":"2","uuid":"3c15bf46-28de-4032-825e-837c7ffa70a6","in_Dashboard":"","areabrief_url":null,"description":"The National Weather Service has issued a High Wind Advisory for the Hawaiian Islands.\n\nWind Advisory for strong trade winds.\n\nA very strong high north of the area will produce strong trade winds today. Winds are expected to subside quickly tonight.\n\nWIND ADVISORY IN EFFECT UNTIL 600 PM THIS EVENING\n\nMessage:The National Weather Service in Honolulu has issued a Wind Advisory, which is in effect until 600 PM this evening. \n * TIMING...through this evening. \n * WINDS...northeast to east winds to 45 to 55 mph with gusts to 65 mph. \n * IMPACTS....winds this strong can cause power outages, make driving difficult and swing doors open and shut forcefully. \n\nEnd of Message."},
             {"app_ID":0,"app_IDs":"","autoexpire":"Y","category_ID":"EVENT","charter_Uri":"","comment_Text":"D2P2 auto-generated Earthquake Hazard","create_Date":"1507203429006","creator":"D2P2","end_Date":"1507289829977","glide_Uri":"","hazard_ID":17051,"hazard_Name":"Earthquake - 5.0 - 4km NW of San Pedro, Philippines","last_Update":"1507203513690","latitude":7.3643,"longitude":126.4874,"master_Incident_ID":"3.1507203393785.1","message_ID":"3.1507203393785","org_ID":-1,"severity_ID":"ADVISORY","snc_url":"http://snc.pdc.org/TEST/4163c1e7-8a22-4d30-a8aa-f9d2753ba3e8/index.html","start_Date":"1507202248310","status":"A","type_ID":"EARTHQUAKE","update_Date":"1507203428462","update_User":null,"product_total":"2","uuid":"4163c1e7-8a22-4d30-a8aa-f9d2753ba3e8","in_Dashboard":"","areabrief_url":null,"description":"An earthquake occurred with a magnitude of 5.0 at a depth of 10.0 km, Location: 4km NW of San Pedro, Philippines reported by USGS at October 05, 11:34:57 GMT.\n\nPDC classifies this event as an \"Advisory\"\nCoordinates:\n  Latitude: 7.3643\n  Longitude: 126.4874\n"},
@@ -40,8 +44,14 @@ const sequelize = new Sequelize('biosurvelliance', 'pdc', 'pdc', {
     
     app.get('/folder?:groupId', function (req, res) {
     
-        console.log("=== Group ID ===");
-        console.log('groupId: ', req.query["groupId"]);
+        // console.log("=== Group ID ===");
+        // console.log('groupId: ', req.query["groupId"]);
+
+        res.header("Access-Control-Allow-Origin", "http://localhost");
+        res.header("Access-Control-Allow-Credentials", "true");
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+        res.header("Content-Type", "application/json");
+        res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
     
         const data = {"items":[
                 {"creator":7,"lastModifiedBy":1150,"owner":7,"id":1192,"itemType":"FOLDER","title":"Group Root","description":null,"groups":[1183],"userList":[],"globalReference":false,"parentFolder":null,"path":"","readOnly":false,"createdAt":1482863439269,"lastModifiedAt":1502139032601},
@@ -55,8 +65,14 @@ const sequelize = new Sequelize('biosurvelliance', 'pdc', 'pdc', {
     
     app.get('/folder/:folderId/attachment', function (req, res) {
     
-        console.log("=== Attachment ===");
-        console.log('folderId: ', req.params["folderId"]);
+        // console.log("=== Attachment ===");
+        // console.log('folderId: ', req.params["folderId"]);
+
+        res.header("Access-Control-Allow-Origin", "http://localhost");
+        res.header("Access-Control-Allow-Credentials", "true");
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+        res.header("Content-Type", "application/json");
+        res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
     
         const data = {
             "1192": {total: 0, items: [], limit: 0, offset: 0},
@@ -76,9 +92,15 @@ const sequelize = new Sequelize('biosurvelliance', 'pdc', 'pdc', {
     });
     
     app.get('/folder/:parentId/attachment/:documentId/content', function (req, res) {
-        console.log('=== Content ====');
-        console.log('parentId: ', req.params["parentId"]);
-        console.log('documentId: ', req.params["documentId"]);
+        // console.log('=== Content ====');
+        // console.log('parentId: ', req.params["parentId"]);
+        // console.log('documentId: ', req.params["documentId"]);
+
+        res.header("Access-Control-Allow-Origin", "http://localhost");
+        res.header("Access-Control-Allow-Credentials", "true");
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+        res.header("Content-Type", "application/json");
+        res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
     
         // const data = '{"bookmark_name":"test Bookmark2","bookmark_data":"{\"version\":6,\"type\":\"BOTH\",\"position\":{\"center\":[270.5804443359375,31.079853225906053],\"zoom\":8},\"layers\":{\"HnP_hazards\":{\"isClustering\":true,\"opacity\":1},\"Est_Wind_Impacts_TAOS\":{\"isClustering\":false,\"opacity\":0.5},\"Est_Max_Storm_Surge_Heights_TAOS\":{\"isClustering\":false,\"opacity\":0.5},\"Est_Rainfall_TAOS\":{\"isClustering\":false,\"opacity\":0.5},\"TRMM1day\":{\"isClustering\":false,\"opacity\":0.25},\"Storm_Positions\":{\"isClustering\":false,\"opacity\":1},\"Storm_Segments\":{\"isClustering\":false,\"opacity\":1},\"cones5day\":{\"isClustering\":false,\"opacity\":0.5},\"cones3day\":{\"isClustering\":false,\"opacity\":0.5},\"Google_Hybrid\":{\"isClustering\":false,\"opacity\":1}}}","startup_flag":1,"create_date":1502884839639}';
         // res.send(json_content);

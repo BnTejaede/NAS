@@ -28,27 +28,36 @@ function createGroup (rawGroup) {
 }
 
 function createScene (rawScene) {
-    return model.Scene.create(mapProperties(rawScene)).then(function (scene) {
-        var group = dataByRawIdentifier[rawScene.groupIdentifier];
-        group.addScene(scene);
+    var group = dataByRawIdentifier[rawScene.groupIdentifier],
+        mapped = mapProperties(rawScene);
+
+    mapped.groupId = group.id;
+
+    return model.Scene.create(mapped).then(function (scene) {
         dataByRawIdentifier[rawScene.identifier] = scene;
         return scene;
     });
 }
 
 function createVersion (rawVersion) {
-    return model.Version.create(mapProperties(rawVersion)).then(function (version) {
-        var scene = dataByRawIdentifier[rawVersion.sceneIdentifier];
-        scene.addVersion(version);
+    var scene = dataByRawIdentifier[rawVersion.sceneIdentifier],
+        mapped = mapProperties(rawVersion);
+
+    mapped.sceneId = scene.id;
+
+    return model.Version.create(mapped).then(function (version) {
         dataByRawIdentifier[rawVersion.identifier] = version;
         return version;
     });
 }
 
 function createFigure (rawFigure) {
-    return model.Figure.create(mapProperties(rawFigure)).then(function (figure) {
-        var version = dataByRawIdentifier[rawFigure.versionIdentifier];
-        version.addFigure(figure);
+    var version = dataByRawIdentifier[rawFigure.versionIdentifier],
+        mapped = mapProperties(rawFigure);
+
+    mapped.versionId = version.id;
+
+    return model.Figure.create(mapped).then(function (figure) {
         dataByRawIdentifier[rawFigure.identifier] = figure;
         return figure;
     });
@@ -65,6 +74,8 @@ const ignoredProperties = {
     identifier: true,
     groupIdentifier: true,
     sceneIdentifier: true,
+    versionIdentifier: true,
+    parentIdentifier: true,
     scenes: true,
     versions: true,
     figures: true,
@@ -77,10 +88,14 @@ function mapProperties(object) {
         properties = {};
     keys.forEach(function (key) {
         if (!ignoredProperties[key]) {
-            properties[key] = object[key];
+            properties[key] = normalizeValue(object[key]);
         }
     });
     return properties;
+}
+
+function normalizeValue(value) {
+    return value === undefined || (typeof value === "string" && !value.length) ? null : value;
 }
 
 function populateRawDataCache() {
