@@ -5,7 +5,10 @@ const bodyParser = require('body-parser');
 
 router.get('/', function (req, res) {
     var versionID = req.params.version;
-    model.Figure.findAll({where: {versionId: versionID}}).then(function (figures) {
+    model.Figure.findAll({
+        where: {versionId: versionID},
+        order: ["position"]
+    }).then(function (figures) {
         res.send({
             items: figures
         });

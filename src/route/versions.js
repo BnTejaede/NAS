@@ -54,11 +54,12 @@ router.get('/:version', function (req, res) {
 
 router.put('/:version', bodyParser.urlencoded({ extended: true }), function (req, res) {
     var rawVersion = mapProperties(req.body),
-        versionID = req.params.version;
+        versionID = req.params.version,
+        updatePromise = rawVersion.figures ? updateVersionWithFigures(rawVersion, versionID) : 
+                                             updateVersionWithoutFigures(rawVersion, versionID);
 
-    model.Version.find({where: {id: versionID}}).then(function (version) {
-        return version.update(rawVersion);
-    }).then(function () {
+
+    return updatePromise.then(function () {
         res.send({
             id: versionID
         });
@@ -67,6 +68,36 @@ router.put('/:version', bodyParser.urlencoded({ extended: true }), function (req
         res.send(error);
     });
 });
+
+function updateVersionWithoutFigures (rawVersion, versionID) {
+    return model.Version.update(rawVersion, {where: {id: versionID}});
+}
+
+function updateVersionWithFigures (rawVersion, versionID) {
+    var figuresToDelete;
+    rawVersion.figures = JSON.parse(rawVersion.figures);
+    mapFiguresToRawData(rawVersion.figures);
+    rawVersion.figures = flattenFigures(rawVersion.figures);
+    return model.Figure.findAll({
+        attributes: ["id"],
+        where: {versionId: versionID}
+    }).then(function (figures) {
+        figuresToDelete = arrayToSet(figures);
+        return model.Version.update(rawVersion, {where: {id: versionID}});
+    }).then(function () {
+        return model.Figure.updateAll(rawVersion.figures, figuresToDelete, versionID);
+    }).then(function () {
+        return model.Figure.deleteAll(figuresToDelete);
+    });
+}
+
+function arrayToSet (array) {
+    var set = new Set();
+    array.forEach(function (item) {
+        set.add(item.id);
+    });
+    return set;
+}
 
 const ignoredProperties = {
     id: true,
@@ -82,6 +113,13 @@ function mapProperties(object) {
         }
     });
     return properties;
+}
+
+function flattenFigures (figures) {
+    return figures.reduce(function (array, figure) {
+        array.push(figure);
+        return figure.type == null ? array.concat(flattenFigures(figure.children)) : array;
+    }, []);
 }
 
 

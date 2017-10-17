@@ -126,11 +126,16 @@ function populateRawDataCache() {
         figure.properties = figure.properties ? JSON.stringify(figure.properties) : "";
     });
 
+    var parentLessCount = 0;
     seedData.figures.forEach(function (figure) {
         figure.parent = rawDataByIdentifier[figure.parentIdentifier];
         if (figure.parent) {
             figure.parent.children = figure.parent.children || [];
+            figure.position = figure.parent.children.length;
             figure.parent.children.push(figure);
+        } else {
+            figure.position = parentLessCount;
+            parentLessCount++;
         }
     });
 }
