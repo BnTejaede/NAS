@@ -41,15 +41,30 @@ function createScene (rawScene) {
 
 function createVersion (rawVersion) {
     var scene = dataByRawIdentifier[rawVersion.sceneIdentifier],
-        mapped = mapProperties(rawVersion);
+        mapped = mapProperties(rawVersion),
+        isDefaultVersion = false;
 
     mapped.sceneId = scene.id;
+    if (!scenesWithDefaultVersions[scene.id]) {
+        scenesWithDefaultVersions[scene.id] = true;
+        isDefaultVersion = true;
+    }
 
     return model.Version.create(mapped).then(function (version) {
         dataByRawIdentifier[rawVersion.identifier] = version;
-        return version;
+        if (isDefaultVersion) {
+            return scene.update({
+                defaultVersionId: version.id
+            }).then(function () {
+                return version;
+            });
+        } else {
+            return version;
+        }
     });
 }
+
+var scenesWithDefaultVersions = {};
 
 function createFigure (rawFigure) {
     var version = dataByRawIdentifier[rawFigure.versionIdentifier],
@@ -142,19 +157,19 @@ function populateRawDataCache() {
 
 function populateSeedData () {
     populateRawDataCache();
-    clearDatabase().then(function () {
-        mapToPromiseAll(seedData.groups, createGroup).then(function () {
-            return mapToPromiseAll(seedData.scenes, createScene);
-        }).then(function () {
-            return mapToPromiseAll(seedData.versions, createVersion);
-        }).then(function () {
-            return mapToPromiseAll(seedData.figures, createFigure);
-        }).then(function () {
-            return mapToPromiseAll(seedData.figures, setFigureParent);
-        }).catch(function (e) {
-            console.error(e);
-        });
-    })
+    return clearDatabase().then(function () {
+        return mapToPromiseAll(seedData.groups, createGroup)
+    }).then(function () {
+        return mapToPromiseAll(seedData.scenes, createScene);
+    }).then(function () {
+        return mapToPromiseAll(seedData.versions, createVersion);
+    }).then(function () {
+        return mapToPromiseAll(seedData.figures, createFigure);
+    }).then(function () {
+        return mapToPromiseAll(seedData.figures, setFigureParent);
+    }).catch(function (e) {
+        console.error(e);
+    });
 }
 
 module.exports = populateSeedData;
