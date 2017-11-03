@@ -3,10 +3,13 @@ const model = require("../data/model");
 const router = express.Router({mergeParams: true});
 const figureRouter = require("./figures");
 const bodyParser = require('body-parser');
+const accessControl = require("../access-control");
 
 router.use("/:version/figure", figureRouter);
 
 
+
+router.use(accessControl);
 router.get('/', function (req, res) {
     var sceneID = req.params.scene;
     model.Version.findAll({where: {sceneId: sceneID}}).then(function (versions) {

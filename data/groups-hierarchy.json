@@ -1,0 +1,80 @@
+{
+    "groups": [
+        {
+            "identifier": "G1",
+            "name": "Public Standard Group 1",
+            "city": "Baltimore",
+            "country":"USA",
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut imperdiet, mauris eget consectetur lacinia, magna odio mollis risus, id aliquam dolor quam eu leo. Nam gravida blandit lacus, vitae lacinia enim faucibus vel. Nam diam velit, molestie a odio eu, dictum molestie odio."
+        }
+    ],
+    "scenes": [
+        {
+            "identifier": "S1",
+            "groupIdentifier": "G1",
+            "name": "Public Standard Scene 1",
+            "description": "A public scene, viewable by whoever"
+        }
+    ],
+    "versions": [
+        {
+            "identifier": "V1",
+            "sceneIdentifier": "S1",
+            "name": "Version 1"
+        }
+    ],
+    "figures": [
+        {
+            "versionIdentifier": "V1",
+            "identifier": "F1",
+            "name": "Folder 1",
+            "type": null,
+            "geometry": null,
+            "properties": ""
+        },
+        {
+            "versionIdentifier": "V1",
+            "identifier": "F2",
+            "name": "Folder 2",
+            "type": null,
+            "geometry": null,
+            "properties": ""
+        },
+        {
+            "versionIdentifier": "V1",
+            "identifier": "F3",
+            "name": "Folder 3",
+            "type": null,
+            "geometry": null,
+            "properties": "",
+            "parentIdentifier": "F1"
+        },
+        {
+            "versionIdentifier": "V1",
+            "identifier": "F4",
+            "name": "Folder 4",
+            "type": null,
+            "geometry": null,
+            "properties": "",
+            "parentIdentifier": "F1"
+        },
+        {
+            "versionIdentifier": "V1",
+            "identifier": "F5",
+            "name": "Folder 5",
+            "type": null,
+            "geometry": null,
+            "properties": "",
+            "parentIdentifier": "F1"
+        },
+        {
+            "versionIdentifier": "V1",
+            "identifier": "F6",
+            "name": "Folder 6",
+            "type": null,
+            "geometry": null,
+            "properties": "",
+            "parentIdentifier": "F2"
+        }
+    ]
+}

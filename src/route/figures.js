@@ -2,13 +2,20 @@ const express = require('express');
 const model = require("../data/model");
 const router = express.Router({mergeParams: true});
 const bodyParser = require('body-parser');
+const accessControl = require("../access-control");
 
+router.use(accessControl);
 router.get('/', function (req, res) {
-    var versionID = req.params.version;
-    model.Figure.findAll({
-        where: {versionId: versionID},
-        order: ["position"]
-    }).then(function (figures) {
+    var versionID = req.params.version,
+        options = {};
+    if (versionID !== undefined) {
+        options = {
+            where: {versionId: versionID},
+            order: ["position"]
+        };
+    }
+
+    model.Figure.findAll(options).then(function (figures) {
         res.send({
             items: figures
         });
@@ -19,16 +26,33 @@ router.post('/', bodyParser.urlencoded({ extended: true }), function (req, res) 
     var rawFigure = mapProperties(req.body),
         versionID = req.params.version;
     
-    rawFigure.versionId = versionID;
-    model.Figure.create(rawFigure).then(function (figure) {
-        res.send({
-            versionID: versionID,
-            id: figure.id
+    if (versionID === undefined) {
+        res.status(400);
+        res.send({error: "Cannot create figure without version id"});
+    } else {
+        rawFigure.versionId = versionID;
+        model.Figure.create(rawFigure).then(function (figure) {
+            res.send({
+                versionID: versionID,
+                id: figure.id
+            });
+        }).catch(function (error) {
+            res.status(500);
+            res.send({error: error});
         });
-    }).catch(function (error) {
-        res.status(500);
-        res.send({error: error});
-    });
+    }
+    
+});
+
+
+var acceptedMethods = ["GET", "PUT"];
+router.all('/:figure', function (req, res, next) {
+    if (acceptedMethods.indexOf(req.method) === -1) {
+        res.status(405);
+        res.send("Method Not Allowed");
+    } else {
+        next() // pass control to the next handler
+    }
 });
 
 router.get('/:figure', function (req, res) {
@@ -42,23 +66,27 @@ router.put('/:figure', bodyParser.urlencoded({ extended: true }), function (req,
     var rawFigure = mapProperties(req.body),
         figureID = req.params.figure;
 
-    model.Figure.find({where: {id: figureID}}).then(function (figure) {
-        return figure.update(rawFigure);
-    }).then(function () {
-        res.send({
-            id: figureID
+        
+        model.Figure.update(rawFigure, {where: {id: figureID}}).then(function () {
+            res.send({
+                id: figureID
+            });
+        }).catch(function (error) {
+            console.log(error);
+            res.status(500);
+            res.send({error: error});
         });
-    }).catch(function (error) {
-        res.status(500);
-        res.send({error: error});
-    });
+
 });
 
 const ignoredProperties = {
     id: true,
     groupID: true,
+    groupId: true,
     sceneID: true,
-    versionID: true
+    sceneId: true,
+    versionID: true,
+    versionId: true
 };
 
 const formPropertyToDatabaseProperty = {
@@ -79,7 +107,9 @@ function mapProperties(object) {
 }
 
 function normalizeValue(value) {
-    return value === undefined || (typeof value === "string" && !value.length) ? null : value;
+    var isUndefined = value === undefined,
+        isInvalidString = !isUndefined && typeof value === "string" && (!value.length || value === "null");
+    return isUndefined || isInvalidString ? null : value;
 }
 
 function extractParentID (rawFigure) {

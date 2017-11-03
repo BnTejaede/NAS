@@ -1,5 +1,7 @@
 const db = require("./database");
 const Sequelize = require("sequelize");
+const figureHooks = require("./hooks");
+
 
 var readyPromises = [];
 const Group = db.define('group', {
@@ -44,48 +46,7 @@ const Version = db.define('version', {
     }
 });
 
-const Figure = db.define('figure', {
-    name: {
-        type: Sequelize.STRING
-    },
-    type: {
-        type: Sequelize.INTEGER
-    },
-    geometry: {
-        type: Sequelize.STRING
-    },
-    properties: {
-        type: Sequelize.STRING
-    },
-    position: {
-        type: Sequelize.INTEGER,
-        allowNull: false
-    }
-},{
-    validate: {
-      bothTypeAndGeometryNullOrNeither() {
-          var hasType = this.type !== null,
-              hasGeometry = this.geometry !== null;
-        
-        if (hasType && !hasGeometry) {
-            console.log(this.type, this.geometry);
-            throw new Error("Figure with type must include geometry");
-        } else if (!hasType && hasGeometry) {
-            console.log(this.type, this.geometry);
-            throw new Error("Folder figure cannot include geometry");
-        }
-      }
-    },
-    hooks: {
-        beforeCreate: function (figure, options) {
-            if (figure.children) {
-                figure.children.forEach(function (child) {
-                    child.versionId = figure.versionId;
-                });
-            }
-        }
-    }
-});
+const Figure = Sequelize.import("./model/index.js");
 
 
 
@@ -97,7 +58,6 @@ Scene.hasMany(Version, {as: "versions", foreignKey: {allowNull: false}});
 //However, it does accomplish the goal of putting defaultVersionId into the Scene table.
 Version.hasOne(Scene, {as: "defaultVersion"});  
 Version.hasMany(Figure, {as: "figures", foreignKey: {allowNull: false}});
-Figure.hasMany(Figure, {as: { singular: "child", plural: "children" }, sourceKey: "id", foreignKey: "parentId"});
 
 
 Figure.updateAll = function (rawFigures, figuresToDelete, versionId) {

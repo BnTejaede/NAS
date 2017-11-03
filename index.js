@@ -1,13 +1,19 @@
 const express = require('express');
 const app = express();
 const groupsRouter = require("./src/route/groups");
+const figuresRouter = require("./src/route/figures");
+const versionsRouter = require("./src/route/versions");
 const Sequelize = require("sequelize");
 const accessControl = require("./src/access-control");
 
 
+
 app.use("/group", groupsRouter);
+app.use("/figure", figuresRouter);
+app.use("/version", versionsRouter);
 app.use("/", express.static("form"));
 app.use('/app', express.static('app'));
+
 
 const sequelize = new Sequelize('biosurvelliance', 'pdc', 'pdc', {
     host: 'localhost',

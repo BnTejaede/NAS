@@ -1,4 +1,5 @@
 const Sequelize = require("sequelize");
+const Op = Sequelize.Op;
 
 const sequelize = new Sequelize('biosurvelliance', 'pdc', 'pdc', {
     host: 'localhost',
@@ -9,8 +10,11 @@ const sequelize = new Sequelize('biosurvelliance', 'pdc', 'pdc', {
       idle: 10000
     },
     // SQLite only
-    storage: 'data/database.sqlite',
-    logging: false
+    storage: 'test/database.sqlite',
+    logging: false,
+    operatorsAliases: {
+      $or: Op.or
+    }
 });
   
 module.exports = sequelize;

@@ -4,15 +4,20 @@
   "main": "index.js",
   "name": "NAS",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test:browser": "concurrently \"nodemon index.js \" \"http-server -p 8085\" \"open http://localhost:8085/test/browser/run.html\"",
+    "test:node": "jasmine JASMINE_CONFIG_PATH=jasmine.json"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.2",
     "express": "^4.15.4",
-    "mr": "^17.0.8",
     "sequelize": "^4.13.8",
     "sqlite3": "^3.1.13"
+  },
+  "devDependencies": {
+    "concurrently": "^3.5.0",
+    "http-server": "^0.10.0",
+    "jasmine": "^2.8.0"
   }
 }

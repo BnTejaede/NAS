@@ -1,6 +1,7 @@
 const db = require("./database");
 const model = require("./model");
-const seedData = require("../../data/groups.json");
+// const seedData = require("../../data/groups.json");
+const seedData = require("../../data/groups-hierarchy.json");
 
 var rawDataByIdentifier = {},
     dataByRawIdentifier = {};
@@ -68,7 +69,8 @@ var scenesWithDefaultVersions = {};
 
 function createFigure (rawFigure) {
     var version = dataByRawIdentifier[rawFigure.versionIdentifier],
-        mapped = mapProperties(rawFigure);
+        mapped = mapProperties(rawFigure),
+        parent;
 
     mapped.versionId = version.id;
 
@@ -84,6 +86,11 @@ function setFigureParent (rawFigure) {
     return parent ? parent.addChild(figure) : null;
 }
 
+function setFigureNextChild(rawFigure) {
+    var figure = dataByRawIdentifier[rawFigure.identifier],
+        nextChild = dataByRawIdentifier[rawFigure.nextChildIdentifier];
+    return nextChild ? figure.setNextChild(nextChild) : null;
+}
 
 const ignoredProperties = {
     identifier: true,
@@ -143,13 +150,18 @@ function populateRawDataCache() {
 
     var parentLessCount = 0;
     seedData.figures.forEach(function (figure) {
+        var previous;
         figure.parent = rawDataByIdentifier[figure.parentIdentifier];
         if (figure.parent) {
             figure.parent.children = figure.parent.children || [];
-            figure.position = figure.parent.children.length;
+            previous = figure.parent.children[figure.parent.children.length - 1];
+            // figure.position = figure.parent.children.length;
+            if (previous) {
+                previous.nextChildIdentifier = figure.identifier;
+            }
             figure.parent.children.push(figure);
         } else {
-            figure.position = parentLessCount;
+            // figure.position = parentLessCount;
             parentLessCount++;
         }
     });
@@ -167,6 +179,8 @@ function populateSeedData () {
         return mapToPromiseAll(seedData.figures, createFigure);
     }).then(function () {
         return mapToPromiseAll(seedData.figures, setFigureParent);
+    }).then(function () {
+        return mapToPromiseAll(seedData.figures, setFigureNextChild);
     }).catch(function (e) {
         console.error(e);
     });
