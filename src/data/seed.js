@@ -1,4 +1,3 @@
-const db = require("./database");
 const model = require("./model");
 // const seedData = require("../../data/groups.json");
 const seedData = require("../../data/groups-hierarchy.json");
@@ -180,7 +179,7 @@ function populateSeedData () {
     }).then(function () {
         return mapToPromiseAll(seedData.figures, setFigureParent);
     }).then(function () {
-        return mapToPromiseAll(seedData.figures, setFigureNextChild);
+        return dataByRawIdentifier;
     }).catch(function (e) {
         console.error(e);
     });

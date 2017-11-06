@@ -5,7 +5,7 @@
   "name": "NAS",
   "scripts": {
     "test:browser": "concurrently \"nodemon index.js \" \"http-server -p 8085\" \"open http://localhost:8085/test/browser/run.html\"",
-    "test:node": "jasmine JASMINE_CONFIG_PATH=jasmine.json"
+    "test:node": "jasmine JASMINE_CONFIG_PATH=jasmine.json NODE_ENV=test"
   },
   "author": "",
   "license": "ISC",

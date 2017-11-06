@@ -1,28 +1,31 @@
 "use strict";
+var fs = require("fs"),
+    path = require("path"),
+    Sequelize = require("sequelize");
 
-var fs        = require("fs");
-var path      = require("path");
-var Sequelize = require("sequelize");
-var env       = process.env.NODE_ENV || "development";
-var config    = require(path.join(__dirname, '..', 'config', 'config.json'))[env];
+var env = process.env.NODE_ENV || "development", 
+    config = require(path.join(__dirname, '../../../', 'config', 'config.json'))[env],
+    db = {}, 
+    sequelize;
+
+// config.logging = false;
 if (process.env.DATABASE_URL) {
-  var sequelize = new Sequelize(process.env.DATABASE_URL,config);
+  sequelize = new Sequelize(process.env.DATABASE_URL, config);
 } else {
-  var sequelize = new Sequelize(config.database, config.username, config.password, config);
+  sequelize = new Sequelize(config.database, config.username, config.password, config);
 }
-var db        = {};
 
-fs
-  .readdirSync(__dirname)
-  .filter(function(file) {
+
+fs.readdirSync(__dirname).filter(function(file) {
     return (file.indexOf(".") !== 0) && (file !== "index.js");
-  })
-  .forEach(function(file) {
-    var model = sequelize.import(path.join(__dirname, file));
-    db[model.name] = model;
-  });
+}).forEach(function(file) {
+var model = sequelize.import(path.join(__dirname, file)),
+    name = model.name.charAt(0).toUpperCase() + model.name.substring(1);
+    db[name] = model;
+});
 
 Object.keys(db).forEach(function(modelName) {
+
   if ("associate" in db[modelName]) {
     db[modelName].associate(db);
   }
