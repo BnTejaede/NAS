@@ -3,136 +3,120 @@ var Sequelize = require("sequelize"),
 
 module.exports = function() {
 
+    function closeGapLeftByItem(item, transaction) {
+        var previousID = item.previousId,
+            self = this;
+
+        return self.update({previousId: item.previousId}, {
+            where: {
+                previousId: item.id,
+            },
+            lock: transaction && transaction.LOCK.UPDATE,
+            transaction: transaction,
+            hooks: false
+        });
+    }
+
+    function setPreviousBeforeInsert (item, transaction) {
+        var self = this;
+        return this.getLastChildOfParent(item.parentId, transaction).then(function (lastChild) {
+            item.previousId = lastChild && lastChild.id;
+            return item;
+        });
+    }
+
+    function shouldOrderQuery (result, options) {
+        var isArray = result && Array.isArray(result),
+            isFolderContents = options.where && options.where.hasOwnProperty("parentId"),
+            canOrderResult = options.attributes.indexOf("previousId") !== -1 && options.attributes.indexOf("id") !== -1;
+
+        return isArray && isFolderContents && canOrderResult;
+    }
+
+    function orderQueryResults (figures) {
+        var byPreviousID = {},
+            next, i;
+
+        figures.forEach(function (figure) {
+            byPreviousID[figure.previousId] = figure;
+            if (figure.previousId === null) {
+                next = figure;
+            }
+        });
+
+        i = 0;
+        while (next) {
+            figures[i] = next;
+            i++;
+            next = byPreviousID[next.id];
+        }
+        console.log("Fetch", figures.map(function (figure) {
+            return figure.id;
+        }));
+    }
 
 	return {
-		beforeCreate: function(item, options) {
-            var figureModel = this;
-            if (!item.changed("position")) {
-                return this.sequelize.transaction({type: Sequelize.Transaction.TYPES.EXCLUSIVE}, function (transaction) {
-                    return item.getSiblings({transaction: transaction, lock: transaction.LOCK.SHARE}).then(function (siblings) {
-                        item.position = siblings.length;
-                        return item;
-                    });
-                });
+        afterFind: function (result, options) {
+            if (shouldOrderQuery(result, options)) {
+                orderQueryResults(result);
             }
-        
         },
-        
-		afterCreate: function(item, options) {
-			var figureModel = this;
-
-        if (item.changed("parentId") && item.changed("position")) {
-            return figureModel.findAll({
-                lock: options.transaction && options.transaction.LOCK.SHARE,
-                transaction: options.transaction,
-                where: {
-                    id: {
-                        [Op.ne]: item.id,
-                    },
-                    parentId: item.parentId
-                }
-            }).then(function (positionCollisions) {
-                if (positionCollisions && positionCollisions.length) {
-                    return figureModel.increment("position", {
-                        where: {
-                            id: {
-                                [Op.ne]: item.id,
-                            },
-                            parentId: item.parentId,
-                            position: {
-                                [Op.gte]: item.position
-                            }
-                        },
-                        transaction: options.transaction,
-                        lock: options.transaction && options.transaction.LOCK.UPDATE
-                    });
-                }
-            });
-        }
-        
-		},
-
-        
-
 		beforeUpdate: function(item, options) {
-			var willParentChange = options.fields.indexOf("parentId") !== -1;
+            var willParentChange = item.changed("parentId"),
+                willLinksChange = item.changed("nextId") || item.changed("previousId"),
+                figureModel = this;
 
             //TODO Clean up position of children of previous parent
             if (willParentChange) {
-                return this.sequelize.transaction({type: Sequelize.Transaction.TYPES.EXCLUSIVE}, function (transaction) {
-                    return item.getSiblings({transaction: transaction, lock: transaction.LOCK.SHARE}).then(function (siblings) {
-                        return item.update({position: siblings.length}, {transaction: transaction, lock: transaction.LOCK.UPDATE});
+                if (options.transaction) {
+                    return closeGapLeftByItem.bind(figureModel)(item, options.transaction).then(function () {
+                        return setPreviousBeforeInsert.bind(figureModel)(item, transaction);
                     });
-                });
-            }
+                } else {
+                    return this.sequelize.transaction({type: Sequelize.Transaction.TYPES.EXCLUSIVE}, function (transaction) {
+                        // console.log("WillParentChange...", item.id, item.previousId, item.nextId);
+                        return closeGapLeftByItem.bind(figureModel)(item, transaction).then(function () {
+                            return setPreviousBeforeInsert.bind(figureModel)(item, transaction);
+                        });
+                    });
+                }
+            } 
         },
 
         afterUpdate: function(item, options) {
-            var figureModel = this,
-                didPositionChange = options.fields.indexOf("position") !== -1;
+            var didParentChange = item.changed("parentId"),
+                figureModel = this;
 
-            if (didPositionChange) {
-                return figureModel.findAll({
-                    lock: options.transaction.LOCK.SHARE,
-                    transaction: options.transaction,
-                    where: {
-                        id: {
-                            [Op.ne]: item.id,
-                        },
-                        parentId: item.parentId
+            return figureModel.findAll({
+                where: {
+                    parentId: item.parentId
+                },
+                transaction: options.transaction
+            }).then(function (figures) {
+                var byPreviousID = {},
+                    result = [], next;
+                if (figures.length >= 3) {
+                    console.log("");
+                    console.log("AfterUpdate ******************", item.id);
+                 
+                    figures.forEach(function (figure) {
+                        byPreviousID[figure.previousId] = figure;
+                        
+                        console.log(figure.previousId + " --> " + figure.id);
+                        if (!figure.previousId) {
+                            next = figure;
+                        }
+                    });
+
+                    while (next) {
+                        result.push(next.id);
+                        next = byPreviousID[next.id];
                     }
-                }).then(function (positionCollisions) {
-                    if (positionCollisions && positionCollisions.length) {
-                        return figureModel.increment("position", {
-                            where: {
-                                id: {
-                                    [Op.ne]: item.id,
-                                },
-                                parentId: item.parentId,
-                                position: {
-                                    [Op.gte]: item.position
-                                }
-                            },
-                            transaction: options.transaction,
-                            lock: options.transaction.LOCK.UPDATE
-                        });
-                    }
-                });
-            }
-            
-            
-            
-
-
-			// var values = item.dataValues,
-            // parentId = item.parentId,
-            // options = {
-            //     where: {
-            //         parentId: parentId
-            //     }
-            // };
-
-            // if (item.children) {
-            //     item.children.forEach(function (child) {
-            //         child.versionId = item.versionId;
-            //     });
-            // }
-            // console.log(options);
-            // console.log("AfterUpdate", item.id, options.fields);
-            // item.getSiblings().then(function (result) {
-            //     console.log("Siblings", item.id, result && result.length);
-
-            // });
-            
-            // if (!item.nextChild) {
-            //     return this.find(options).then(function(result) {
-            //         console.log("afterUpdate....", item.id, result && result.id, parentId);
-            //         var shouldSetNextChild = result && result.id !== item.id;
-            //         // console.log("Result", result);
-            //         // if (!parent) throw new Error('Parent does not exist');
-            //         return shouldSetNextChild ? result.setNextChild(item) : null;
-            //     });
-            // }
+                    console.log("Result", result);
+                }
+                
+                return null;
+            });
             
 		},
         

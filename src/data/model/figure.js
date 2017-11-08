@@ -3,6 +3,7 @@ var Sequelize = require("sequelize"),
     hooks = require("../hooks/figure-hooks");
 
 module.exports = function(sequelize, DataTypes) {
+    
     var Figure = sequelize.define('figure', {
         name: {
             type: DataTypes.STRING
@@ -15,16 +16,10 @@ module.exports = function(sequelize, DataTypes) {
         },
         properties: {
             type: DataTypes.STRING
-        },
-        position: {
-            type: DataTypes.INTEGER
         }
     },{
         defaultScope: {
-            order: [
-                ["parentId", 'DESC'],
-                ["position", "ASC"]
-            ]
+            order: ["parentId"]
         },
         version: true,
         validate: {
@@ -47,6 +42,59 @@ module.exports = function(sequelize, DataTypes) {
     Figure.associate = function (models) {
         Figure.hasMany(Figure, {as: { singular: "child", plural: "children" }, foreignKey: "parentId"});
         Figure.belongsTo(Figure, {as: "parent", foreignKey: "parentId"});
+
+        Figure.hasOne(Figure, {as: "previous", foreignKey: "previousId"});
+        Figure.belongsTo(Figure, {as: "next", foreignKey: "previousId"});
+    };
+
+    var protoCreate = Figure.create;
+    
+    Figure._create = function (data, transaction) {
+        var self = this,
+            parentId = typeof data.parentId === "number" ? data.parentId : null,
+            previousSibling, index;
+
+            return self.getLastChildOfParent(parentId, transaction).then(function (result) {
+                lastSibling = result;
+                data.previousId = lastSibling && lastSibling.id;
+                return protoCreate.apply(self, [data, {
+                    transaction: transaction,
+                    lock: transaction.LOCK.UPDATE
+                }]);
+            });
+    };
+
+    Figure.create = function (data, options) {
+        var transaction = options && options.transaction;
+
+        if (transaction) {
+            return Figure._create(data, transaction);
+        } else {
+            return sequelize.transaction(function (transaction) {
+                return Figure._create(data, transaction);
+            });
+        }
+    }
+
+
+    Figure.insertAtPosition = function (rawFigure, position) {
+        var self = this,
+            newFigure,
+            previousSibling;
+
+        return sequelize.transaction(function (transaction) {
+            return Figure._create(rawFigure, transaction).then(function (figure) {
+                newFigure = figure;
+                return figure.getSiblings({transaction: transaction});
+            }).then(function (siblings) {
+                position = Math.max(position, 0);
+                position = Math.min(position, siblings.length - 1);
+                previousSibling = siblings[position];
+                return Figure.insertAfter(newFigure.id, previousSibling.id, {transaction: transaction});
+            }).then(function () {
+                return newFigure.reload();
+            });
+        });
     };
 
     Figure.swap = function (id1, id2) {
@@ -54,22 +102,113 @@ module.exports = function(sequelize, DataTypes) {
         return Figure.findAll({
             where: {
                 id: [id1, id2]
-            }
+            },
+            hooks: false
         }).then(function (results) {
             var figure1 = results[0],
-                figure2 = results[1],
-                position1 = figure1.position,
-                position2 = figure2.position;
+                figure2 = results[1];
+
+            
             return Promise.all([
-                figure1.update({position: position2}, {hooks: false}),
-                figure2.update({position: position1}, {hooks: false})
+                Figure.insertAfter(figure1.id, figure2.previousId),
+                Figure.insertAfter(figure2.id, figure1.previousId)
             ]);
         });
     };
 
+    Figure._insertAfter = function (id, idToFollow, transaction) {
+
+        return Figure.find({
+            where: {
+                id: id
+            },
+            transaction: transaction
+        }).then(function (figure) {
+            // Remove figure from current order
+            return Figure.update({
+                previousId: figure.previousId 
+            }, {
+                where: {
+                    previousId: id
+                },
+                transaction: transaction
+            });
+        }).then(function () {
+            //Point idToFollow's old previous to self
+            return Figure.update({
+                previousId: id
+            }, {
+                where: {
+                    previousId: idToFollow 
+                },
+                transaction: transaction,
+                hooks: false
+            })
+        }).then(function () {
+            // Set value of own id to follow
+            return Figure.update({
+                previousId: idToFollow 
+            }, {
+                where: {
+                    id: id
+                },
+                transaction: transaction
+            });
+        });
+    };
+
+    Figure.insertAfter = function (id, idToFollow, options) {
+        var self = this,
+            transaction = options && options.transaction;
+
+        if (transaction) {
+            return Figure._insertAfter(id, idToFollow, transaction);
+        } else {
+            return sequelize.transaction(function (transaction) {
+                return Figure._insertAfter(id, idToFollow, transaction);
+            });
+        }
+    };
+
+
+    Figure.getLastChildOfParent = function (parentID, transaction) {
+        var self = this;
+        //TODO Update to take advantage of ordering that occurs in hooks.afterFind
+        return this.findAll({
+            attributes: ["previousId"],
+            where: {
+                parentId: parentID
+            },
+            transaction: transaction,
+            lock: transaction.LOCK.SHARE
+        }).then(function (siblingIDs) {
+            var ids = siblingIDs.map(function (sibling) {
+                return sibling.previousId;
+            }).filter(function (previousId) {
+                return typeof previousId === "number";
+            }),
+            where = {
+                parentId: parentID
+            };
+
+            if (ids.length) {
+                where.id = {
+                    [Op.notIn]: ids
+                }
+            }
+            return self.find({
+                where: where,
+                transaction: transaction,
+                lock: transaction.LOCK.SHARE
+            });
+        })
+    }
+
+
     Figure.prototype.getSiblings = function (options) {
         var self = this,
             parentId = this.getDataValue("parentId");
+            options = options || {};
 
 
         if (typeof parentId === "number") {
@@ -105,7 +244,7 @@ module.exports = function(sequelize, DataTypes) {
                 rawFigure.versionId = versionId;
                 return Figure.create(rawFigure);
             } else {
-                if (figuresToDelete.has(rawFigure.id)) {
+                if (figuresToDelete && figuresToDelete.has(rawFigure.id)) {
                     figuresToDelete.delete(rawFigure.id);
                 }
                 return Figure.update(rawFigure, {where: {id: rawFigure.id}});
