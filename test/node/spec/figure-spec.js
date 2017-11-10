@@ -44,7 +44,6 @@ describe("Figures", function () {
         var parent = figures["F1"],
             position = 1,
             child;
-        
             model.Figure.insertAtPosition({
                 name: "Inserted Figure",
                 description: "A figure created with a parent",
@@ -58,6 +57,62 @@ describe("Figures", function () {
                 expect(children[position].id).toBe(child.id);
                 done();
             });
+    });
+
+
+    it("can be moved to position", function (done) {
+        var parent = figures["F1"],
+            fromPosition = 0,
+            toPosition = 2,
+            child;
+        
+        return parent.getChildren().then(function (children) {
+            idToMove = children[fromPosition].id;
+            return model.Figure.moveToPosition(idToMove, toPosition);
+        }).then(function () {
+            return parent.getChildren();
+        }).then(function (children) {
+
+            expect(children[toPosition].id).toEqual(idToMove);
+            done();
+        });
+    });
+
+    it("can be moved to next position", function (done) {
+        var parent = figures["F1"],
+            fromPosition = 1,
+            toPosition = 2,
+            child;
+        
+        return parent.getChildren().then(function (children) {
+            idToMove = children[fromPosition].id;
+            return model.Figure.moveToPosition(idToMove, toPosition);
+        }).then(function () {
+            return parent.getChildren();
+        }).then(function (children) {
+
+            expect(children[toPosition].id).toEqual(idToMove);
+            done();
+        });
+    });
+
+    it("can be moved to last position", function (done) {
+        var parent = figures["F1"],
+            fromPosition, toPosition,
+            child;
+        
+        return parent.getChildren().then(function (children) {
+            toPosition = children.length - 1;
+            fromPosition = toPosition - 1;
+            idToMove = children[fromPosition].id;
+            return model.Figure.moveToPosition(idToMove, toPosition);
+        }).then(function () {
+            return parent.getChildren();
+        }).then(function (children) {
+
+            expect(children[toPosition].id).toEqual(idToMove);
+            done();
+        });
     });
 
 

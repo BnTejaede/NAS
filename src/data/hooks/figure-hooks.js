@@ -35,6 +35,7 @@ module.exports = function() {
 
     function orderQueryResults (figures) {
         var byPreviousID = {},
+            newResult = [],
             next, i;
 
         figures.forEach(function (figure) {
@@ -44,26 +45,26 @@ module.exports = function() {
             }
         });
 
-        i = 0;
         while (next) {
-            figures[i] = next;
-            i++;
+            if (newResult.indexOf(next) === -1) {
+                newResult.push(next);
+            } 
             next = byPreviousID[next.id];
         }
-        console.log("Fetch", figures.map(function (figure) {
+        console.log("Fetch", newResult.map(function (figure) {
             return figure.id;
         }));
+        return newResult;
     }
 
 	return {
         afterFind: function (result, options) {
             if (shouldOrderQuery(result, options)) {
-                orderQueryResults(result);
+                result.splice.apply(result, [0, Infinity].concat(orderQueryResults(result)));
             }
         },
 		beforeUpdate: function(item, options) {
             var willParentChange = item.changed("parentId"),
-                willLinksChange = item.changed("nextId") || item.changed("previousId"),
                 figureModel = this;
 
             //TODO Clean up position of children of previous parent
@@ -97,7 +98,7 @@ module.exports = function() {
                     result = [], next;
                 if (figures.length >= 3) {
                     console.log("");
-                    console.log("AfterUpdate ******************", item.id);
+                    console.log("AfterUpdate ******************", item.id, item.parentId);
                  
                     figures.forEach(function (figure) {
                         byPreviousID[figure.previousId] = figure;
@@ -112,7 +113,7 @@ module.exports = function() {
                         result.push(next.id);
                         next = byPreviousID[next.id];
                     }
-                    console.log("Result", result);
+                    console.log("Order", result);
                 }
                 
                 return null;

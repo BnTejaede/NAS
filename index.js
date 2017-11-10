@@ -3,7 +3,6 @@ const app = express();
 const groupsRouter = require("./src/route/groups");
 const figuresRouter = require("./src/route/figures");
 const versionsRouter = require("./src/route/versions");
-const Sequelize = require("sequelize");
 const accessControl = require("./src/access-control");
 
 
@@ -14,18 +13,6 @@ app.use("/version", versionsRouter);
 app.use("/", express.static("form"));
 app.use('/app', express.static('app'));
 
-
-const sequelize = new Sequelize('biosurvelliance', 'pdc', 'pdc', {
-    host: 'localhost',
-    dialect: 'sqlite',
-    pool: {
-      max: 5,
-      min: 0,
-      idle: 10000
-    },
-    // SQLite only
-    storage: 'data/database.sqlite'
-  });
   
 /********************************************
  * TODO Move all of the requests below to routers

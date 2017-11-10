@@ -1,12 +1,10 @@
 var fs = require("fs"),
     path = require("path"),
-    Sequelize = require("sequelize"),
-    cls = require("continuation-local-storage");
+    Sequelize = require("sequelize");
     
 
 var env = process.env.NODE_ENV || "development", 
     config = require(path.join(__dirname, '../../../', 'config', 'config.json'))[env],
-    namespace = cls.createNamespace('biosurveillance'),
     db = {}, 
     sequelize;
 
@@ -18,9 +16,6 @@ if (process.env.DATABASE_URL) {
 } else {
   sequelize = new Sequelize(config.database, config.username, config.password, config);
 }
-
-Sequelize.useCLS(namespace);
-
 
 fs.readdirSync(__dirname).filter(function(file) {
     return (file.indexOf(".") !== 0) && (file !== "index.js");
