@@ -27,22 +27,23 @@ function buildFiguresCache (data) {
         folder = figures.folders[key];
         folder.children = orderChildren(folder.children);
     });
-
     return figures;
 }
 
 function orderChildren(children) {
     var sorted = [],
         byPreviousID = {},
-        next;
+        figure, next, i, n;
 
-        children.forEach(function (figure) {
-            byPreviousID[figure.previousId] = figure;
+        for (i = 0; (figure = children[i]); i++) {
+            if (!byPreviousID[figure.previousId]) {
+                byPreviousID[figure.previousId] = figure;
+            } 
+
             if (figure.previousId === null) {
                 next = figure;
             }
-        });
-
+        }
         while (next) {
             sorted.push(next);
             next = byPreviousID[next.id];

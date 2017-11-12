@@ -14,10 +14,17 @@ function clearDatabase() {
     ]);
 }
 
-function mapToPromiseAll (array, operation) {
-    return Promise.all(array.map(function (item) {
-        return operation(item);
-    }));
+function iterateWithActions(array, operation, results) {
+    var next = array.shift();
+        results = results || [];
+    return performAction(next, operation).then(function (item) {
+        results.push(item);
+        return array.length ? iterateWithActions(array, operation, results) : results;
+    });
+}
+
+function performAction(object, action) {
+    return action(object);
 }
 
 function createGroup (rawGroup) {
@@ -82,7 +89,8 @@ function createFigure (rawFigure) {
 function setFigureParent (rawFigure) {
     var figure = dataByRawIdentifier[rawFigure.identifier],
         parent = dataByRawIdentifier[rawFigure.parentIdentifier];
-    return parent ? parent.addChild(figure) : null;
+        console.log("SetFigureParent", figure.id, parent && parent.id);
+    return parent ? parent.addChild(figure) : Promise.resolve(null);
 }
 
 function setFigureNextChild(rawFigure) {
@@ -169,15 +177,15 @@ function populateRawDataCache() {
 function populateSeedData () {
     populateRawDataCache();
     return clearDatabase().then(function () {
-        return mapToPromiseAll(seedData.groups, createGroup)
+        return iterateWithActions(seedData.groups.slice(), createGroup);
     }).then(function () {
-        return mapToPromiseAll(seedData.scenes, createScene);
+        return iterateWithActions(seedData.scenes.slice(), createScene);
     }).then(function () {
-        return mapToPromiseAll(seedData.versions, createVersion);
+        return iterateWithActions(seedData.versions.slice(), createVersion);
     }).then(function () {
-        return mapToPromiseAll(seedData.figures, createFigure);
+        return iterateWithActions(seedData.figures.slice(), createFigure);
     }).then(function () {
-        return mapToPromiseAll(seedData.figures, setFigureParent);
+        return iterateWithActions(seedData.figures.slice(), setFigureParent);
     }).then(function () {
         return dataByRawIdentifier;
     }).catch(function (e) {

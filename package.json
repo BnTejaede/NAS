@@ -4,20 +4,23 @@
   "main": "index.js",
   "name": "NAS",
   "scripts": {
-    "test:browser": "concurrently \"nodemon index.js NODE_ENV=development\" \"http-server -p 8085\" \"open http://localhost:8085/test/browser/run.html\"",
-    "test:node": "jasmine JASMINE_CONFIG_PATH=jasmine.json NODE_ENV=test"
+    "test:browser": "concurrently \"NODE_ENV=test nodemon index.js\" \"http-server -p 8085\" \"echo http://localhost:8085/test/browser/run.html\"",
+    "test:node": "NODE_ENV=test jasmine JASMINE_CONFIG_PATH=jasmine.json"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.2",
     "express": "^4.15.4",
+    "fs-extra": "^4.0.2",
     "sequelize": "^4.13.8",
     "sqlite3": "^3.1.13"
   },
   "devDependencies": {
     "concurrently": "^3.5.0",
+    "fast-json-patch": "^2.0.6",
     "http-server": "^0.10.0",
-    "jasmine": "^2.8.0"
+    "jasmine": "^2.8.0",
+    "nodemon": "^1.12.1"
   }
 }

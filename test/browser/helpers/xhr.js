@@ -23,11 +23,15 @@ const ignoredProperties = {
 
 function requestBodyForObject (object) {
     var keys = Object.keys(object),
-        body = "";
+        value, body = "";
     
     keys.forEach(function (key) {
         if (!ignoredProperties[key]) {
-            body += "&" + key + "=" + object[key];
+            value = object[key];
+            if (typeof value === "object") {
+                value = JSON.stringify(value);
+            }
+            body += "&" + key + "=" + value;
         }
     });
 

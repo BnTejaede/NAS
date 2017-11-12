@@ -3,6 +3,7 @@ const model = require("../data/model");
 const router = express.Router({mergeParams: true});
 const bodyParser = require('body-parser');
 const accessControl = require("../access-control");
+const jsonPatch = require("fast-json-patch");
 
 router.use(accessControl);
 router.get('/', function (req, res) {
@@ -44,7 +45,7 @@ router.post('/', bodyParser.urlencoded({ extended: true }), function (req, res) 
 });
 
 
-var acceptedMethods = ["GET", "PUT"];
+var acceptedMethods = ["GET", "PATCH", "PUT"];
 router.all('/:figure', function (req, res, next) {
     if (acceptedMethods.indexOf(req.method) === -1) {
         res.status(405);
@@ -63,38 +64,41 @@ router.get('/:figure', function (req, res) {
 
 router.put('/:figure', bodyParser.urlencoded({ extended: true }), function (req, res) {
     var rawFigure = mapProperties(req.body),
-        figureID = req.params.figure;
+        figureID = req.params.figure,
+        position = +rawFigure.position;
 
-    if (rawFigure.hasOwnProperty("position")) {
-        model.Figure.moveToPosition(+figureID, +rawFigure.position).then(function () {
-            res.send({
-                id: +figureID,
-                position: +rawFigure.position
-            });
-        }).catch(function (error) {
-            console.log(error);
-            res.status(500);
-            res.send({error: error});
+    delete rawFigure.position;
+    
+    
+    model.Figure.update(rawFigure, {where: {id: figureID}}).then(function () {
+        return isNaN(position) ? null : model.Figure.moveToPosition(+figureID, +position);
+    }).then(function () {
+        res.send({
+            id: figureID
         });
-    } else {
-        model.Figure.update(rawFigure, {where: {id: figureID}}).then(function () {
-            res.send({
-                id: figureID
-            });
-        }).catch(function (error) {
-            console.log(error);
-            res.status(500);
-            res.send({error: error});
-        });
-    }
+    }).catch(function (error) {
+        console.log(error);
+        res.status(500);
+        res.send({error: error});
+    });
 });
 
-// router.patch('/:figure', bodyParser.urlencoded({ extended: true }), function (req, res) {
-//     var operations = req.body;
-//     res.send({
-//         operations: req.body
-//     });
-// });
+router.patch('/:figure', bodyParser.urlencoded({ extended: true }), function (req, res) {
+    var figureID = req.params.figure, 
+        operations = JSON.parse(req.body.operations);
+    
+    return model.Figure.applyPatch(figureID, operations).then(function (children) {
+        res.send({
+            order: children.map(function (child) {
+                return child.id;
+            })
+        });
+    });
+    
+});
+
+
+
 
 const ignoredProperties = {
     id: true,

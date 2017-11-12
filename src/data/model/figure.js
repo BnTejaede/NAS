@@ -117,6 +117,7 @@ module.exports = function(sequelize, DataTypes) {
     };
 
     Figure.moveToPosition = function (figureID, position, options) {
+        
         if (options && options.transaction) {
             return Figure._moveToPosition(figureID, position, options.transaction);
         } else {
@@ -131,6 +132,8 @@ module.exports = function(sequelize, DataTypes) {
             previousSibling, previousId,
             indexOfSelf, sibling, found = false,
             figure;
+        console.log("MoveToPosition", figureID, position);
+        
         return Figure.find({
             where: {
                 id: figureID
@@ -152,18 +155,30 @@ module.exports = function(sequelize, DataTypes) {
                     break;
                 }
             }
+            console.log("Positions", position, indexOfSelf);
             if (!position) {
                 previousId = null;
             } else {
                 previousSibling = siblings[indexOfSelf < position ? position : position - 1];
                 previousId = previousSibling ? previousSibling.id : null;
             }
+            console.log("PreviousSibling", previousSibling && previousSibling.id);
             if (indexOfSelf === position) {
                 return Promise.resolve(null);
             } else {
                 console.log("SiblingsBefore", figureID, indexOfSelf, position, previousId, siblings.map(function (child) {return child.id }));
                 return Figure._insertAfter(figureID, previousId, transaction);
             }
+
+            // [0] Order [ 8, 9, 10, 11, 4 ]
+            // [0] MoveToPosition 4 0
+            // [0] Fetch [ 8, 9, 10, 11, 4 ]
+            // [0] Positions 0 4
+            // [0] PreviousSibling undefined
+            // [0] SiblingsBefore 4 4 0 null [ 8, 9, 10, 11, 4 ]
+            // [0] InsertAfter 1 11 --> undefined null --> 4
+            // [0] Fetch [ 4, 15 ]
+            // [0] SiblingsAfter 4 4 0 null [ 4, 15 ]
         }).then(function () {
             return Figure.findAll({
                 where: {
@@ -196,8 +211,39 @@ module.exports = function(sequelize, DataTypes) {
         });
     };
 
+    function parseJSONPatchOperation (operation) {
+        return {
+            id: +/\/(\d*)/.exec(operation.path)[1],
+            previousId: operation.value
+        };
+    }
+    Figure.applyPatch = function (figureID, operations) {
+        return sequelize.transaction(function (transaction) {
+            return Promise.all(operations.map(function (operation) {
+                var parsed = parseJSONPatchOperation(operation);
+                return Figure.update({
+                    previousId: parsed.previousId
+                }, {
+                    where: {
+                        id: parsed.id
+                    },
+                    transaction: transaction,
+                    lock: transaction.LOCK.UPDATE,
+                    hooks: false
+                });
+            }));
+        }).then(function () {
+            return Figure.findAll({
+                where: {
+                    parentId: figureID
+                }
+            });
+        });
+    };
+
     Figure._insertAfter = function (id, idToFollow, transaction) {
-       
+       var parentId;
+
         return Figure.findAll({
             where: {
                 [Op.or]: {
@@ -216,6 +262,7 @@ module.exports = function(sequelize, DataTypes) {
                 figure = results[1];
                 next = results[0];
             }
+            parentId = figure.parentId;
             // Remove self from current position
             console.log("InsertAfter", results.length, figure.previousId + " --> " + (next && next.id), idToFollow + " --> " + id);
             return Figure.update({
@@ -234,13 +281,14 @@ module.exports = function(sequelize, DataTypes) {
                 previousId: id
             }, {
                 where: {
-                    previousId: idToFollow 
+                    previousId: idToFollow,
+                    parentId: parentId
                 },
                 transaction: transaction,
                 lock: transaction.LOCK.UPDATE,
                 hooks: false
             });
-        }).then(function () {
+        }).then(function (result) {
             // Point self to new idToFollow
             return Figure.update({
                 previousId: idToFollow 

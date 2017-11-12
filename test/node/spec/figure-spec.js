@@ -1,14 +1,19 @@
 const model = require("../../../src/data/model");
-const seed = require("../../../src/data/seed");
 describe("Figures", function () {
-    var figures;
+    var rootFigures;
+
     beforeAll(function (done) {
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 90000;
-        seed().then(function (allFigures) {
-            figures = allFigures;
+        model.Figure.findAll({
+            where: {
+                parentId: null
+            }
+        }).then(function (allFigures) {
+            rootFigures = allFigures;
             done();
         });
-    }, 20000);
+    });
+
 
     it("can be created", function (done) {
         model.Figure.create({
@@ -22,7 +27,7 @@ describe("Figures", function () {
     });
 
     it("can be created with parent", function (done) {
-        var parent = figures["F1"],
+        var parent = rootFigures[0],
             child;
         
             model.Figure.create({
@@ -41,7 +46,7 @@ describe("Figures", function () {
     });
 
     it("can be created with parent & position", function (done) {
-        var parent = figures["F1"],
+        var parent = rootFigures[0],
             position = 1,
             child;
             model.Figure.insertAtPosition({
@@ -61,7 +66,7 @@ describe("Figures", function () {
 
 
     it("can be moved to position", function (done) {
-        var parent = figures["F1"],
+        var parent = rootFigures[0],
             fromPosition = 0,
             toPosition = 2,
             child;
@@ -79,7 +84,7 @@ describe("Figures", function () {
     });
 
     it("can be moved to next position", function (done) {
-        var parent = figures["F1"],
+        var parent = rootFigures[0],
             fromPosition = 1,
             toPosition = 2,
             child;
@@ -97,7 +102,7 @@ describe("Figures", function () {
     });
 
     it("can be moved to last position", function (done) {
-        var parent = figures["F1"],
+        var parent = rootFigures[0],
             fromPosition, toPosition,
             child;
         
@@ -117,7 +122,7 @@ describe("Figures", function () {
 
 
     it("can be swapped", function (done) {
-        var parent = figures["F1"],
+        var parent = rootFigures[0],
             indexA = 0,
             indexB = 2,
             figureA, figureB;
@@ -145,8 +150,8 @@ describe("Figures", function () {
     
 
     it("can switch parents", function (done) {
-        var parentA = figures["F1"],
-            parentB = figures["F2"],
+        var parentA = rootFigures[0],
+            parentB = rootFigures[1],
             figureToMove;
         
             model.Figure.findAll({
@@ -167,5 +172,74 @@ describe("Figures", function () {
 
             done();
     });
+
+    it("can move with position and parent", function (done) {
+        var parentA = rootFigures[0],
+            parentB = rootFigures[1],
+            newPosition = 0,
+            figureToMove;
+            model.Figure.findAll({
+                where: {
+                    parentId: parentA.id
+                }
+            }).then(function (figures) {
+                figureToMove = figures[figures.length-1];
+                return figureToMove.update({parentId: parentB.id});
+            }).then(function (updated) {
+                figureToMove = updated;
+                return model.Figure.moveToPosition(+figureToMove.id, newPosition);
+            }).then(function (siblings) {
+                return parentB.getChildren();
+            }).then(function (siblings) {
+                expect(siblings[newPosition].id).toEqual(figureToMove.id);
+                done();
+            });
+    });
+
+
+    it("can apply json patch", function (done) {
+        var parent = rootFigures[2],
+            fromIndex = 1,
+            toIndex = 4,
+            toMove, newPrevious, oldPrevious, oldFollower,
+            operations, order;
+            model.Figure.findAll({
+                where: {
+                    parentId: parent.id
+                }
+            }).then(function (figures) {
+                toMove = figures[fromIndex].id;
+                oldPrevious = figures[fromIndex - 1] && figures[fromIndex - 1].id || null;
+                oldFollower = figures[fromIndex + 1] && figures[fromIndex + 1].id || null;
+
+                if (fromIndex < toIndex) {
+                    newFollower = figures[toIndex + 1] && figures[toIndex + 1].id || null;
+                    newPrevious = figures[toIndex] && figures[toIndex].id || null;
+                } else {
+                    newFollower = figures[toIndex] && figures[toIndex].id || null;
+                    newPrevious = figures[toIndex-1] && figures[toIndex-1].id || null;
+                }
+                
+
+
+                operations = [
+                    {op: "replace", path: "/" + toMove, value: newPrevious},
+                    {op: "replace", path: "/" + newFollower, value: toMove},
+                    {op: "replace", path: "/" + oldFollower, value: oldPrevious}
+                ];
+
+                order = figures.map(function (child) {
+                    return child.id;
+                });
+
+                return model.Figure.applyPatch(parent.id, operations);
+            }).then(function (result) {
+                console.log(order, result.map(function (child) {
+                    return child.id;
+                }));
+                done();
+            });
+    });
+
 
 });

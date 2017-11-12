@@ -2,3 +2,7 @@
 node_modules/
 .DS_Store
 data/database.sqlite
+db.development.sqlite
+db.test.sqlite
+db.test.sqlite.bak
+test/database.sqlite
