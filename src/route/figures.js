@@ -24,7 +24,10 @@ router.get('/', function (req, res) {
 
 router.post('/', bodyParser.urlencoded({ extended: true }), function (req, res) {
     var rawFigure = mapProperties(req.body),
-        versionID = req.params.version;
+        versionID = req.params.version || rawFigure.versionId,
+        position = +rawFigure.position;
+        
+        delete rawFigure.position;
     
     if (versionID === undefined) {
         res.status(400);
@@ -98,6 +101,18 @@ router.patch('/:figure', bodyParser.urlencoded({ extended: true }), function (re
 });
 
 
+router.get('/:figure/children', function (req, res) {
+    var figureID = req.params.figure;
+    model.Figure.findAll({where: {parentId: figureID}}).then(function (children) {
+        res.send({
+            items: children
+        });
+    }).catch(function (error) {
+        console.log(error);
+        res.status(500);
+        res.send({error: error});
+    });
+});
 
 
 const ignoredProperties = {
@@ -106,8 +121,7 @@ const ignoredProperties = {
     groupId: true,
     sceneID: true,
     sceneId: true,
-    versionID: true,
-    versionId: true
+    versionID: true
 };
 
 const formPropertyToDatabaseProperty = {
