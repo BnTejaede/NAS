@@ -1,21 +1,15 @@
 {
   "development": {
     "dialect": "sqlite",
-    "storage": "./db.development.sqlite",
+    "storage": "./data/db.development.sqlite",
     "database": "biosurveillance",
     "logging": true
-  },
-  "seed": {
-    "dialect": "sqlite",
-    "database": "biosurveillance",
-    "storage": "./db.test.sqlite.bak",
-    "logging": false
   },
   "test": {
     "dialect": "sqlite",
     "database": "biosurveillance",
-    "seedStorage": "./db.test.sqlite.bak",
-    "storage": "./db.test.sqlite",
+    "seedStorage": "./data/db.test.sqlite.snapshot",
+    "storage": "./data/db.test.sqlite",
     "logging": false
   },
   "production": {

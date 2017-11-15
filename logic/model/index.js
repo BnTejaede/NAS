@@ -4,14 +4,13 @@ var fs = require("fs-extra"),
     
 
 var env = process.env.NODE_ENV || "development", 
-    config = require(path.join(__dirname, '../../../', 'config', 'config.json'))[env],
+    config = require(path.join(__dirname, '../../', 'config', 'config.json'))[env],
     db = {}, 
     sequelize;
 
 config.transactionType = Sequelize.Transaction.TYPES.EXCLUSIVE;
 config.isolationLevel = Sequelize.Transaction.ISOLATION_LEVELS.READ_COMMITTED;
 
-console.log("Config", config);
 if (config.seedStorage) { 
   if (fs.existsSync(config.storage)) {
     fs.removeSync(config.storage);
@@ -19,7 +18,6 @@ if (config.seedStorage) {
   fs.copySync(config.seedStorage, config.storage);
   delete config.seedStorage;
 } 
-
 
 
 if (process.env.DATABASE_URL) {

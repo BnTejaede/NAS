@@ -1,6 +1,6 @@
 const express = require('express');
 const accessControl = require("../access-control");
-const model = require("../data/model");
+const model = require("../model");
 const router = express.Router();
 const sceneRouter = require("./scenes");
 const bodyParser = require('body-parser');

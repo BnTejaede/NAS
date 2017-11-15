@@ -1,9 +1,9 @@
 const express = require('express');
 const app = express();
-const groupsRouter = require("./src/route/groups");
-const figuresRouter = require("./src/route/figures");
-const versionsRouter = require("./src/route/versions");
-const accessControl = require("./src/access-control");
+const groupsRouter = require("./logic/route/groups");
+const figuresRouter = require("./logic/route/figures");
+const versionsRouter = require("./logic/route/versions");
+const accessControl = require("./logic/access-control");
 
 
 

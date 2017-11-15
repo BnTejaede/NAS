@@ -1,4 +1,4 @@
-const model = require("../../../src/data/model");
+const model = require("../../../logic/model");
 const Op = require("sequelize").Op;
 
 describe("Versions", function () {

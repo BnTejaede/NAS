@@ -1,5 +1,5 @@
 const express = require('express');
-const model = require("../data/model");
+const model = require("../model");
 const router = express.Router({mergeParams: true});
 const figureRouter = require("./figures");
 const bodyParser = require('body-parser');

@@ -1,6 +1,9 @@
-const model = require("./model");
-// const seedData = require("../../data/groups.json");
-const seedData = require("../../data/groups-hierarchy.json");
+const Sequelize = require("sequelize");
+const model = require("../../src/data/model");
+const seedData = require("./data/figures-hierarchy.json");
+
+
+
 
 var rawDataByIdentifier = {},
     dataByRawIdentifier = {};
@@ -186,5 +189,5 @@ function populateSeedData () {
     });
 }
 
-module.exports = populateSeedData;
+populateSeedData();
 

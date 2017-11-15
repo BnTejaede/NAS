@@ -1,5 +1,5 @@
 const express = require('express');
-const model = require("../data/model");
+const model = require("../model");
 const router = express.Router({mergeParams: true});
 const bodyParser = require('body-parser');
 const accessControl = require("../access-control");

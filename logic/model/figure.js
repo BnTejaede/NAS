@@ -1,6 +1,6 @@
 var Sequelize = require("sequelize"),
     Op = Sequelize.Op,
-    hooks = require("../hooks/figure-hooks");
+    hooks = require("../hook/figure-hooks");
 
 module.exports = function(sequelize, DataTypes) {
     
@@ -24,8 +24,8 @@ module.exports = function(sequelize, DataTypes) {
         version: true,
         validate: {
           bothTypeAndGeometryNullOrNeither() {
-              var hasType = this.type !== null,
-                  hasGeometry = this.geometry !== null;
+              var hasType = this.type !== null && this.type !== undefined,
+                  hasGeometry = this.geometry !== null && this.geometry !== undefined;
             
             if (hasType && !hasGeometry) {
                 console.log(this.type, this.geometry);
