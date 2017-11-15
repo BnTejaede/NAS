@@ -89,14 +89,7 @@ function createFigure (rawFigure) {
 function setFigureParent (rawFigure) {
     var figure = dataByRawIdentifier[rawFigure.identifier],
         parent = dataByRawIdentifier[rawFigure.parentIdentifier];
-        console.log("SetFigureParent", figure.id, parent && parent.id);
     return parent ? parent.addChild(figure) : Promise.resolve(null);
-}
-
-function setFigureNextChild(rawFigure) {
-    var figure = dataByRawIdentifier[rawFigure.identifier],
-        nextChild = dataByRawIdentifier[rawFigure.nextChildIdentifier];
-    return nextChild ? figure.setNextChild(nextChild) : null;
 }
 
 const ignoredProperties = {

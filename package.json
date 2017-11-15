@@ -6,7 +6,8 @@
   "scripts": {
     "test:browser": "concurrently \"NODE_ENV=test nodemon index.js\" \"http-server -p 8085\" \"echo http://localhost:8085/test/browser/run.html\"",
     "test:node": "NODE_ENV=test jasmine JASMINE_CONFIG_PATH=jasmine.json",
-    "start": "nodemon index.js"
+    "start": "nodemon index.js",
+    "seed": "node test/database.js"
   },
   "author": "",
   "license": "ISC",

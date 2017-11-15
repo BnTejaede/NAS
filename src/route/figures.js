@@ -48,7 +48,7 @@ router.post('/', bodyParser.urlencoded({ extended: true }), function (req, res) 
 });
 
 
-var acceptedMethods = ["GET", "PATCH", "PUT"];
+var acceptedMethods = ["DELETE", "GET", "PATCH", "PUT"];
 router.all('/:figure', function (req, res, next) {
     if (acceptedMethods.indexOf(req.method) === -1) {
         res.status(405);
@@ -81,6 +81,18 @@ router.put('/:figure', bodyParser.urlencoded({ extended: true }), function (req,
         });
     }).catch(function (error) {
         console.log(error);
+        res.status(500);
+        res.send({error: error});
+    });
+});
+
+router.delete('/:figure', bodyParser.urlencoded({ extended: true }), function (req, res) {
+    var figureID = req.params.figure;
+    model.Figure.destroy({where: {id: figureID}}).then(function (result) {
+        res.send({
+            id: figureID
+        });
+    }).catch(function (error) {
         res.status(500);
         res.send({error: error});
     });

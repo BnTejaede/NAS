@@ -38,31 +38,62 @@ module.exports = function(sequelize, DataTypes) {
         },
         hooks: hooks
     });
+
     
     Figure.associate = function (models) {
-        Figure.hasMany(Figure, {as: { singular: "child", plural: "children" }, foreignKey: "parentId"});
-        Figure.belongsTo(Figure, {as: "parent", foreignKey: "parentId"});
+        Figure.hasMany(Figure, {as: { singular: "child", plural: "children" }, foreignKey: "parentId", onDelete: "CASCADE"});
+        Figure.belongsTo(Figure, {as: "parent", foreignKey: "parentId", onDelete: "CASCADE"});
 
         Figure.hasOne(Figure, {as: "previous", foreignKey: "previousId"});
         Figure.belongsTo(Figure, {as: "next", foreignKey: "previousId"});
     };
 
+
     var protoCreate = Figure.create;
     
     Figure._create = function (data, transaction) {
         var self = this,
-            parentId = typeof data.parentId === "number" ? data.parentId : null,
+            parentId = isNaN(data.parentId) ? null : data.parentId,
             previousSibling, index;
 
-            return self.getLastChildOfParent(parentId, transaction).then(function (result) {
+            data.type = isNaN(data.type) ? null : data.type;
+
+            return self.getLastChildOfParent(parentId, data.versionId, transaction).then(function (result) {
                 lastSibling = result;
                 data.previousId = lastSibling && lastSibling.id;
                 return protoCreate.apply(self, [data, {
                     transaction: transaction,
                     lock: transaction.LOCK.UPDATE
                 }]);
+            }).then(function (figure) {
+                if (data.children) {
+                    data.children.forEach(function (rawFigure) {
+                        rawFigure.versionId = figure.versionId;
+                        rawFigure.parentId = figure.id;
+                    });
+                    return Figure.createAll(data.children, transaction).then(function () {
+                        return figure;
+                    });
+                } else {
+                    return figure;
+                }
             });
     };
+
+    Figure.createAll = function (rawFigures, transaction, results) {
+        var next = rawFigures.shift();
+            results = results || [];
+        if (next) {
+            return Figure._create(next, transaction).then(function (item) {
+                results.push(item);
+                return Figure.createAll(rawFigures, transaction, results);
+            });
+        } else {
+            return Promise.resolve(results);
+        }
+    }; 
+
+    
 
     Figure.create = function (data, options) {
         var transaction = options && options.transaction;
@@ -87,7 +118,8 @@ module.exports = function(sequelize, DataTypes) {
             newFigure = figure;
             return Figure.findAll({
                 where: {
-                    parentId: figure.parentId
+                    parentId: figure.parentId,
+                    versionId: figure.versionId
                 },
                 transaction: transaction
             });
@@ -132,7 +164,6 @@ module.exports = function(sequelize, DataTypes) {
             previousSibling, previousId,
             indexOfSelf, sibling, found = false,
             figure;
-        console.log("MoveToPosition", figureID, position);
         
         return Figure.find({
             where: {
@@ -143,7 +174,8 @@ module.exports = function(sequelize, DataTypes) {
             figure = result;
             return Figure.findAll({
                 where: {
-                    parentId: figure.parentId
+                    parentId: figure.parentId,
+                    versionId: figure.versionId
                 },
                 transaction: transaction
             });
@@ -155,30 +187,18 @@ module.exports = function(sequelize, DataTypes) {
                     break;
                 }
             }
-            console.log("Positions", position, indexOfSelf);
             if (!position) {
                 previousId = null;
             } else {
                 previousSibling = siblings[indexOfSelf < position ? position : position - 1];
                 previousId = previousSibling ? previousSibling.id : null;
             }
-            console.log("PreviousSibling", previousSibling && previousSibling.id);
             if (indexOfSelf === position) {
                 return Promise.resolve(null);
             } else {
-                console.log("SiblingsBefore", figureID, indexOfSelf, position, previousId, siblings.map(function (child) {return child.id }));
                 return Figure._insertAfter(figureID, previousId, transaction);
             }
 
-            // [0] Order [ 8, 9, 10, 11, 4 ]
-            // [0] MoveToPosition 4 0
-            // [0] Fetch [ 8, 9, 10, 11, 4 ]
-            // [0] Positions 0 4
-            // [0] PreviousSibling undefined
-            // [0] SiblingsBefore 4 4 0 null [ 8, 9, 10, 11, 4 ]
-            // [0] InsertAfter 1 11 --> undefined null --> 4
-            // [0] Fetch [ 4, 15 ]
-            // [0] SiblingsAfter 4 4 0 null [ 4, 15 ]
         }).then(function () {
             return Figure.findAll({
                 where: {
@@ -187,7 +207,6 @@ module.exports = function(sequelize, DataTypes) {
                 transaction: transaction
             });
         }).then(function (siblings) {
-            console.log("SiblingsAfter", figureID, indexOfSelf, position, previousId, siblings.map(function (child) {return child.id }));
             return null;
         });
     };
@@ -242,7 +261,7 @@ module.exports = function(sequelize, DataTypes) {
     };
 
     Figure._insertAfter = function (id, idToFollow, transaction) {
-       var parentId;
+       var figure, parentId;
 
         return Figure.findAll({
             where: {
@@ -254,7 +273,7 @@ module.exports = function(sequelize, DataTypes) {
             transaction: transaction,
             lock: transaction.LOCK.UPDATE
         }).then(function (results) {
-            var next, figure;
+            var next;
             if (results[0].id === id) {
                 figure = results[0];
                 next = results[1];
@@ -264,7 +283,6 @@ module.exports = function(sequelize, DataTypes) {
             }
             parentId = figure.parentId;
             // Remove self from current position
-            console.log("InsertAfter", results.length, figure.previousId + " --> " + (next && next.id), idToFollow + " --> " + id);
             return Figure.update({
                 previousId: figure.previousId
             }, {
@@ -282,7 +300,8 @@ module.exports = function(sequelize, DataTypes) {
             }, {
                 where: {
                     previousId: idToFollow,
-                    parentId: parentId
+                    parentId: parentId,
+                    versionId: figure.versionId
                 },
                 transaction: transaction,
                 lock: transaction.LOCK.UPDATE,
@@ -317,13 +336,14 @@ module.exports = function(sequelize, DataTypes) {
     };
 
 
-    Figure.getLastChildOfParent = function (parentID, transaction) {
+    Figure.getLastChildOfParent = function (parentID, versionId, transaction) {
         var self = this;
         //TODO Update to take advantage of ordering that occurs in hooks.afterFind
         return this.findAll({
             attributes: ["previousId"],
             where: {
-                parentId: parentID
+                parentId: parentID,
+                versionId: versionId
             },
             transaction: transaction,
             lock: transaction.LOCK.SHARE
@@ -334,7 +354,8 @@ module.exports = function(sequelize, DataTypes) {
                 return typeof previousId === "number";
             }),
             where = {
-                parentId: parentID
+                parentId: parentID,
+                versionId: versionId
             };
 
             if (ids.length) {
@@ -363,6 +384,7 @@ module.exports = function(sequelize, DataTypes) {
 
         return Figure.findAll({
             where: {
+                versionId: self.versionId,
                 parentId: parentId,
                 id: {
                     [Op.ne]: self.id

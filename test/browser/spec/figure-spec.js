@@ -249,10 +249,93 @@ describe("Figure API", function () {
             console.log("Response", order + " -- > " + response.order);
             expect(response).toBeDefined();
             done();
-        });
-            
+        });           
+    });
 
-                     
+    it("can delete leaf", function (done) {
+        var groupID = 1,
+            sceneID = 1,
+            versionID = 1,
+            allFigureURL = host,
+            url = host + "figure/",
+            count, toDelete;
+
+        allFigureURL += "group/" + groupID + "/";
+        allFigureURL += "scene/" + sceneID + "/";
+        allFigureURL += "version/" + versionID + "/";
+        allFigureURL += "figure/";
+
+
+        sendRequest(allFigureURL, "GET").then(function (data) {
+            var figures = buildFiguresCache(data.items),
+                roots = figures.tree,
+                root = roots[2];
+
+            toDelete = root.children[2].id;
+            count = root.children.length;
+
+            url += toDelete;
+            return sendRequest(url, "DELETE");
+        }).then(function () {
+            return sendRequest(allFigureURL, "GET");
+        }).then(function (data) {
+            var figures = buildFiguresCache(data.items),
+                roots = figures.tree,
+                root = roots[2];
+
+            expect(root.children.length).toEqual(count - 1);
+            expect(root.children.map(function (figure) {
+                return figure.id;
+            }).indexOf(toDelete)).toEqual(-1);
+
+            done();
+        }).catch(function (e) {
+            console.error(e);
+            done();
+        });
+    });
+
+
+    it("can delete folder", function (done) {
+        var groupID = 1,
+            sceneID = 1,
+            versionID = 1,
+            allFigureURL = host,
+            url = host + "figure/",
+            count, toDelete, deleteCount;
+
+        allFigureURL += "group/" + groupID + "/";
+        allFigureURL += "scene/" + sceneID + "/";
+        allFigureURL += "version/" + versionID + "/";
+        allFigureURL += "figure/";
+
+
+        sendRequest(allFigureURL, "GET").then(function (data) {
+            var figures = buildFiguresCache(data.items),
+                roots = figures.tree,
+                root = roots[2];
+
+            toDelete = root.id;
+            count = data.items.length;
+            deleteCount = 1 + root.children.length;
+
+            url += toDelete;
+            return sendRequest(url, "DELETE");
+        }).then(function () {
+            return sendRequest(allFigureURL, "GET");
+        }).then(function (data) {
+            
+            expect(data.items.length).toEqual(count - deleteCount);
+            expect(data.items.map(function (figure) {
+                return figure.id;
+            }).indexOf(toDelete)).toEqual(-1);
+
+            done();
+        }).catch(function (e) {
+            console.error(e);
+            done();
+        });
+
     });
 
 });

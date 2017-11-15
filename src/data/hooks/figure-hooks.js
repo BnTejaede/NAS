@@ -19,7 +19,7 @@ module.exports = function() {
 
     function setPreviousBeforeInsert (item, transaction) {
         var self = this;
-        return this.getLastChildOfParent(item.parentId, transaction).then(function (lastChild) {
+        return this.getLastChildOfParent(item.parentId, item.versionId, transaction).then(function (lastChild) {
             item.previousId = lastChild && lastChild.id;
             return item;
         });
@@ -51,13 +51,41 @@ module.exports = function() {
             } 
             next = byPreviousID[next.id];
         }
-        console.log("Fetch", newResult.map(function (figure) {
-            return figure.id;
-        }));
+
         return newResult;
     }
 
+    function prepareForDestroy (figure, transaction) {
+        var self = this;
+        return this.update({ //Remove from siblings
+            previousId: figure.previousId
+        }, {
+            where: {
+                previousId: figure.id
+            },
+            transaction: transaction,
+            hooks: false
+        }).then(function () {
+            return self.destroy({ //cascade destroy
+                where: {
+                    parentId: figure.id
+                },
+                transaction: transaction
+            });
+        });
+    }
+
 	return {
+        beforeDestroy: function (figure, options) {
+            var self = this;
+            if (options.transaction) {
+                return prepareForDestroy.bind(self)(figure, options.transaction);
+            } else {
+                return this.sequelize.transaction({type: Sequelize.Transaction.TYPES.EXCLUSIVE}, function (transaction) {
+                    return prepareForDestroy.bind(self)(figure, transaction);
+                });
+            }
+        },
         afterFind: function (result, options) {
             if (shouldOrderQuery(result, options)) {
                 result.splice.apply(result, [0, Infinity].concat(orderQueryResults(result)));
@@ -75,7 +103,6 @@ module.exports = function() {
                     });
                 } else {
                     return this.sequelize.transaction({type: Sequelize.Transaction.TYPES.EXCLUSIVE}, function (transaction) {
-                        // console.log("WillParentChange...", item.id, item.previousId, item.nextId);
                         return closeGapLeftByItem.bind(figureModel)(item, transaction).then(function () {
                             return setPreviousBeforeInsert.bind(figureModel)(item, transaction);
                         });
@@ -97,13 +124,10 @@ module.exports = function() {
                 var byPreviousID = {},
                     result = [], next;
                 if (figures.length >= 3) {
-                    console.log("");
-                    console.log("AfterUpdate ******************", item.id, item.parentId);
                  
                     figures.forEach(function (figure) {
                         byPreviousID[figure.previousId] = figure;
                         
-                        console.log(figure.previousId + " --> " + figure.id);
                         if (!figure.previousId) {
                             next = figure;
                         }
@@ -113,7 +137,6 @@ module.exports = function() {
                         result.push(next.id);
                         next = byPreviousID[next.id];
                     }
-                    console.log("Order", result);
                 }
                 
                 return null;
@@ -129,6 +152,10 @@ module.exports = function() {
 		beforeBulkUpdate: function(options) {
 			// set individualHooks = true so that beforeUpdate and afterUpdate hooks run
 			options.individualHooks = true;
-		}
+        },
+        beforeBulkDestroy: function(options) {
+			// set individualHooks = true so that beforeDestroy and afterDestroy hooks run
+			options.individualHooks = true;
+        }
 	};
 }();

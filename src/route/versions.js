@@ -28,16 +28,7 @@ router.post('/', bodyParser.urlencoded({ extended: true }), function (req, res) 
     rawVersion.figures = rawVersion.figures ? JSON.parse(rawVersion.figures) : [];
     mapFiguresToRawData(rawVersion.figures);
 
-    version = model.Version.create(rawVersion, {
-        include: [{
-            model: model.Figure,
-            as: "figures",
-            include: [{
-                model: model.Figure,
-                as: "children"
-            }]
-        }]
-    }).then(function (version) {
+    version = model.Version.create(rawVersion).then(function (version) {
         res.send({
             sceneID: sceneID,
             id: version.id
