@@ -22,8 +22,18 @@ router.post('/', bodyParser.urlencoded({ extended: true }), function (req, res) 
         scene;
 
     rawScene.groupId = groupID;
-
-    model.Scene.create(rawScene).then(function (scene) {
+    rawScene.defaultVersion = {
+        name: "Initial Version"
+    };
+    model.Scene.create(rawScene, {
+        include: {
+            association: "defaultVersion",
+        }
+    }).then(function (result) {
+        scene = result;
+        defaultVersion.sceneId = scene.id;
+        return model.Version.create(defaultVersion);
+    }).then(function () {
         res.send({
             groupID: groupID,
             id: scene.id
@@ -46,9 +56,7 @@ router.put('/:scene', bodyParser.urlencoded({ extended: true }), function (req, 
         sceneID = req.params.scene,
         scene;
     
-    model.Scene.find({where: {id: sceneID}}).then(function (scene) {
-        return scene.update(rawScene);
-    }).then(function () {
+    model.Scene.update(rawScene, {where: {id: sceneID}}).then(function () {
         res.send({
             id: sceneID
         });
@@ -68,11 +76,16 @@ function mapProperties(object) {
         properties = {};
     keys.forEach(function (key) {
         if (!ignoredProperties[key]) {
-            properties[key] = object[key];
+            properties[key] = normalizeValue(object[key]);
         }
     });
     return properties;
 }
 
+function normalizeValue(value) {
+    var isUndefined = value === undefined,
+        isInvalidString = !isUndefined && typeof value === "string" && (!value.length || value === "null");
+    return isUndefined || isInvalidString ? null : value;
+}
 
 module.exports = router;
