@@ -7,16 +7,25 @@ module.exports = function() {
         afterCreate: function (scene, options) {
             if (scene.defaultVersionId === null || scene.defaultVersionId === undefined) {
                 return scene.getVersions().then(function (versions) {
-                    scene.defaultVersionId = versions[0].id;
-                    return scene.save();
+                    if (versions.length) {
+                        scene.defaultVersionId = versions[0].id;
+                        return scene.save();
+                    } else {
+                        return null;
+                    }
+                    
                 });
             }
         },
         afterUpdate: function (scene, options) {
             if (scene.defaultVersionId === null || scene.defaultVersionId === undefined) {
                 return scene.getVersions().then(function (versions) {
-                    scene.defaultVersionId = versions[0].id;
-                    return scene.save();
+                    if (versions.length) {
+                        scene.defaultVersionId = versions[0].id;
+                        return scene.save();
+                    } else {
+                        return null;
+                    }
                 });
             }
             
