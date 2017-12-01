@@ -1,5 +1,5 @@
 const Sequelize = require("sequelize");
-const model = require("../../src/data/model");
+const model = require("../../logic/model");
 const seedData = require("./data/figures-hierarchy.json");
 
 
@@ -181,13 +181,15 @@ function populateSeedData () {
     }).then(function () {
         return iterateWithActions(seedData.figures.slice(), createFigure);
     }).then(function () {
+        console.log("FinishCreateFigure....");
         return iterateWithActions(seedData.figures.slice(), setFigureParent);
     }).then(function () {
+        console.log("FinishSeed....");
         return dataByRawIdentifier;
     }).catch(function (e) {
         console.error(e);
     });
 }
 
-populateSeedData();
+// populateSeedData();
 

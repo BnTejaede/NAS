@@ -237,9 +237,10 @@ describe("Figures", function () {
                 return model.Figure.applyPatch(parent.id, operations);
             }).then(function (result) {
                 //TODO write definitive test.
-                console.log(order, result.map(function (child) {
-                    return child.id;
-                }));
+                // console.log(order, result.map(function (child) {
+                //     return child.id;
+                // }));
+                expect(result).toBeDefined();
                 done();
             });
     });

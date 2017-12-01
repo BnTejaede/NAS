@@ -220,7 +220,7 @@ describe("Figure API", function () {
             var figures = buildFiguresCache(data.items),
                 roots = figures.tree,
                 root = roots[2];
-
+            debugger;
             toMove = root.children[fromIndex].id;
             oldPrevious = root.children[fromIndex - 1] && root.children[fromIndex - 1].id || null;
             oldFollower = root.children[fromIndex + 1] && root.children[fromIndex + 1].id || null;

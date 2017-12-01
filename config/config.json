@@ -5,6 +5,13 @@
     "database": "biosurveillance",
     "logging": true
   },
+  "seed": {
+    "dialect": "sqlite",
+    "storage": "./data/db.development.sqlite",
+    "seedStorage": "./tools/seed/data/db.development.folders.sqlite",
+    "database": "biosurveillance",
+    "logging": true
+  },
   "test": {
     "dialect": "sqlite",
     "database": "biosurveillance",

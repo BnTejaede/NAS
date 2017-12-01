@@ -1,4 +1,5 @@
-var hooks = require("../hook/figure-hooks");
+var hooks = require("../hook/scene-hooks");
+
 module.exports = function(sequelize, DataTypes) {
     var Scene = sequelize.define('scene', {
         name: {

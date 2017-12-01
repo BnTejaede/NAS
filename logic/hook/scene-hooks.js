@@ -1,23 +1,22 @@
 var Sequelize = require("sequelize"),
-Op = Sequelize.Op;
+    Op = Sequelize.Op;
 
 module.exports = function() {
 
-
     return {
         afterCreate: function (scene, options) {
-            if (scene.defaultVersionId === null) {
+            if (scene.defaultVersionId === null || scene.defaultVersionId === undefined) {
                 return scene.getVersions().then(function (versions) {
                     scene.defaultVersionId = versions[0].id;
-                    return scene.save;
+                    return scene.save();
                 });
             }
         },
         afterUpdate: function (scene, options) {
-            if (scene.defaultVersionId === null) {
+            if (scene.defaultVersionId === null || scene.defaultVersionId === undefined) {
                 return scene.getVersions().then(function (versions) {
                     scene.defaultVersionId = versions[0].id;
-                    return scene.save;
+                    return scene.save();
                 });
             }
             
@@ -34,5 +33,5 @@ module.exports = function() {
 			// set individualHooks = true so that beforeDestroy and afterDestroy hooks run
 			options.individualHooks = true;
         }
-    }
-})
+    };
+}();
