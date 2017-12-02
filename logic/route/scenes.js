@@ -22,18 +22,14 @@ router.post('/', bodyParser.urlencoded({ extended: true }), function (req, res) 
         scene;
 
     rawScene.groupId = groupID;
-    rawScene.defaultVersion = {
-        name: "Initial Version"
-    };
+    rawScene.versions = [{name: "Initial"}];
+
     model.Scene.create(rawScene, {
-        include: {
-            association: "defaultVersion",
-        }
-    }).then(function (result) {
-        scene = result;
-        defaultVersion.sceneId = scene.id;
-        return model.Version.create(defaultVersion);
-    }).then(function () {
+        include: [{
+            as: "versions",
+            model: model.Version
+        }]
+    }).then(function (scene) {
         res.send({
             groupID: groupID,
             id: scene.id
