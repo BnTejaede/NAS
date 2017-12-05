@@ -20,7 +20,8 @@
         {
             "identifier": "V1",
             "sceneIdentifier": "S1",
-            "name": "Version 1"
+            "name": "Version 1",
+            "layers": "HnP_hazards,Google_Hybrid,Recent_Earthquakes"
         }
     ],
     "figures": [

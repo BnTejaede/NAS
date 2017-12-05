@@ -24,8 +24,8 @@ module.exports = function(sequelize, DataTypes) {
         version: true,
         validate: {
           bothTypeAndGeometryNullOrNeither() {
-              var hasType = this.type !== null && this.type !== undefined,
-                  hasGeometry = this.geometry !== null && this.geometry !== undefined;
+              var hasType = isNull(this.type),
+                  hasGeometry = isNull(this.geometry);
             
             if (hasType && !hasGeometry) {
                 console.log(this.type, this.geometry);
@@ -38,6 +38,11 @@ module.exports = function(sequelize, DataTypes) {
         },
         hooks: hooks
     });
+
+    function isNull(field) {
+        var type = typeof field;
+        return field === null || type === "undefined" || (type === "string" && field.length === 0);
+    }
 
     
     Figure.associate = function (models) {

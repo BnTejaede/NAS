@@ -2,6 +2,9 @@ module.exports = function(sequelize, DataTypes) {
     var Version = sequelize.define('version', {
         name: {
             type: DataTypes.STRING
+        },
+        layers: {
+            type: DataTypes.STRING
         }
     });
 
