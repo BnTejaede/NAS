@@ -9,6 +9,39 @@ const bodyParser = require('body-parser');
 router.use(accessControl);
 router.use("/:group/scene", sceneRouter);
 
+
+/**
+ * @swagger
+ * /group:
+ *   get:
+ *     description: Returns groups
+ *     tags:
+ *      - Groups
+ *     produces:
+ *      - application/json
+ *     responses:
+ *       200:
+ *         description: Returns all groups
+ *         schema:
+ *           type: array
+ *           items:
+ *             $ref: '#/definitions/Group'
+ *   post:
+ *     description: Create a group
+ *     tags:
+ *      - Groups
+ *     parameters:
+ *       - $ref: '#/parameters/name'
+ *     consumes:
+ *      - application/x-www-form-urlencoded
+ *     produces:
+ *      - application/json
+ *     responses:
+ *       200:
+ *         description: Returns ID of new group
+ *         schema:
+ *           type: object
+ */
 router.get('/', function (req, res) {
     model.Group.findAll().then(function (groups) {
         res.send({
@@ -16,6 +49,7 @@ router.get('/', function (req, res) {
         });
     });
 });
+
 
 router.post('/', bodyParser.urlencoded({ extended: true }), function (req, res) {
     var rawGroup = mapProperties(req.body);

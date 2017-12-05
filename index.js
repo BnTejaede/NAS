@@ -1,11 +1,17 @@
-const express = require('express');
-const app = express();
-const groupsRouter = require("./logic/route/groups");
-const figuresRouter = require("./logic/route/figures");
-const versionsRouter = require("./logic/route/versions");
-const accessControl = require("./logic/access-control");
+var express = require('express'),
+    app = express(),
+    groupsRouter = require("./logic/route/groups"),
+    figuresRouter = require("./logic/route/figures"),
+    versionsRouter = require("./logic/route/versions"),
+    accessControl = require("./logic/access-control"),
+    swaggerUi = require('swagger-ui-express'),
+    definitions = require("./api/definitions.json").definitions,
+    swaggerSpec = require("./swagger");
 
 
+      
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use("/group", groupsRouter);
 app.use("/figure", figuresRouter);
@@ -13,7 +19,6 @@ app.use("/version", versionsRouter);
 app.use("/", express.static("form"));
 app.use('/app', express.static('app'));
 
-  
 /********************************************
  * TODO Move all of the requests below to routers
  */
@@ -102,7 +107,6 @@ app.use('/app', express.static('app'));
 /*
 * END Requests to move
 /********************************************/
-
 
 app.listen(8000, function () {
 	console.log('=======================');

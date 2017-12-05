@@ -1,3 +1,4 @@
+
 module.exports = function (sequelize, DataTypes) {
     var Group = sequelize.define('group', {
         name: {
@@ -18,5 +19,8 @@ module.exports = function (sequelize, DataTypes) {
         Group.hasMany(models.Scene, {as: "scenes", foreignKey: {allowNull: false}});
     };
 
+    
+
     return Group;
 };
+
