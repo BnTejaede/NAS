@@ -1,11 +1,49 @@
-const express = require('express');
-const model = require("../model");
-const router = express.Router({mergeParams: true});
-const bodyParser = require('body-parser');
-const accessControl = require("../access-control");
-const jsonPatch = require("fast-json-patch");
+var express = require('express'),
+    model = require("../model"),
+    router = express.Router({mergeParams: true}),
+    bodyParser = require('body-parser'),
+    accessControl = require("../access-control"),
+    jsonPatch = require("fast-json-patch");
 
 router.use(accessControl);
+/**
+ * @swagger
+ * /version/{versionId}/figure:
+ *   get:
+ *     description: Get all Figures for a Version
+ *     tags:
+ *      - Figures
+ *     parameters:
+ *     - $ref: '#/parameters/versionId'
+ *     produces:
+ *      - application/json
+ *     responses:
+ *       200:
+ *         description: Returns all Figures for a Version
+ *         schema:
+ *           type: array
+ *           items:
+ *             $ref: '#/definitions/Scene'
+ *   post:
+ *     description: Create a Figure
+ *     tags:
+ *      - Figures
+ *     parameters:
+ *       - $ref: '#/parameters/versionId'
+ *       - $ref: '#/parameters/figureName'
+ *       - $ref: '#/parameters/geometry'
+ *       - $ref: '#/parameters/figureProperties'
+ *       - $ref: '#/parameters/figureType'
+ *     consumes:
+ *      - application/x-www-form-urlencoded
+ *     produces:
+ *      - application/json
+ *     responses:
+ *       200:
+ *         description: Returns ID of new Figure
+ *         schema:
+ *           type: object
+ */
 router.get('/', function (req, res) {
     var versionID = req.params.version,
         options = {};
@@ -58,6 +96,74 @@ router.all('/:figure', function (req, res, next) {
     }
 });
 
+
+/**
+ * @swagger
+ * /figure/{figureId}:
+ *   get:
+ *     description: Get Figure by ID
+ *     tags:
+ *      - Figures
+ *     parameters:
+ *     - $ref: '#/parameters/figureId'
+ *     produces:
+ *      - application/json
+ *     responses:
+ *       200:
+ *         description: Returns Figure object
+ *         schema:
+ *           type: array
+ *           items:
+ *             $ref: '#/definitions/Figure'
+ *   put:
+ *     description: Edit a Figure
+ *     tags:
+ *      - Figures
+ *     parameters:
+ *       - $ref: '#/parameters/figureId'
+ *       - $ref: '#/parameters/figureName'
+ *       - $ref: '#/parameters/geometry'
+ *       - $ref: '#/parameters/figureProperties'
+ *       - $ref: '#/parameters/figureType'
+ *     consumes:
+ *      - application/x-www-form-urlencoded
+ *     produces:
+ *      - application/json
+ *     responses:
+ *       200:
+ *         description: Returns ID of edited Version
+ *         schema:
+ *           type: object
+ *   delete:
+ *     description: Delete a Figure
+ *     tags:
+ *      - Figures
+ *     parameters:
+ *       - $ref: '#/parameters/figureId'
+ *     produces:
+ *      - application/json
+ *     responses:
+ *       200:
+ *         description: Returns ID of deleted Figure
+ *         schema:
+ *           type: object
+ *   patch:
+ *     description: Reorder children of a Figure Folder
+ *     tags:
+ *      - Figures
+ *     parameters:
+ *       - $ref: '#/parameters/figureId'
+ *       - $ref: '#/parameters/patchOperations'
+ *     consumes:
+ *      - application/x-www-form-urlencoded
+ *     produces:
+ *      - application/json
+ *     responses:
+ *       200:
+ *         description: Returns ids of Figure children in the new order
+ *         schema:
+ *           type: object
+ */
 router.get('/:figure', function (req, res) {
     var figureID = req.params.figure;
     model.Figure.find({where: {id: figureID}}).then(function (figure) {
@@ -113,6 +219,27 @@ router.patch('/:figure', bodyParser.urlencoded({ extended: true }), function (re
 });
 
 
+/**
+ * @swagger
+ * /figure/{figureId}/children:
+ *   get:
+ *     description: Get children of Figure
+ *     tags:
+ *      - Figures
+ *     parameters:
+ *     - $ref: '#/parameters/figureId'
+ *     produces:
+ *      - application/json
+ *     responses:
+ *       200:
+ *         description: Returns all children of Figure
+ *         schema:
+ *           type: array
+ *           items:
+ *             $ref: '#/definitions/Figure'
+ *
+ */
+
 router.get('/:figure/children', function (req, res) {
     var figureID = req.params.figure;
     model.Figure.findAll({where: {parentId: figureID}}).then(function (children) {
@@ -127,7 +254,7 @@ router.get('/:figure/children', function (req, res) {
 });
 
 
-const ignoredProperties = {
+var ignoredProperties = {
     id: true,
     groupID: true,
     groupId: true,
@@ -136,7 +263,7 @@ const ignoredProperties = {
     versionID: true
 };
 
-const formPropertyToDatabaseProperty = {
+var formPropertyToDatabaseProperty = {
     parentID: "parentId"
 };
 

@@ -2,6 +2,7 @@ var express = require('express'),
     app = express(),
     groupsRouter = require("./logic/route/groups"),
     figuresRouter = require("./logic/route/figures"),
+    scenesRouter = require("./logic/route/scenes"),
     versionsRouter = require("./logic/route/versions"),
     accessControl = require("./logic/access-control"),
     swaggerUi = require('swagger-ui-express'),
@@ -14,6 +15,7 @@ var express = require('express'),
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use("/group", groupsRouter);
+app.use("/scene", scenesRouter);
 app.use("/figure", figuresRouter);
 app.use("/version", versionsRouter);
 app.use("/", express.static("form"));

@@ -1,11 +1,48 @@
-const express = require('express');
-const model = require("../model");
-const router = express.Router({mergeParams: true});
-const versionRouter = require("./versions");
-const bodyParser = require('body-parser');
+var express = require('express'),
+    model = require("../model"),
+    router = express.Router({mergeParams: true}),
+    versionRouter = require("./versions"),
+    bodyParser = require('body-parser');
 
 router.use("/:scene/version", versionRouter);
 
+
+/**
+ * @swagger
+ * /group/{groupId}/scene:
+ *   get:
+ *     description: Get all Scenes for a Group
+ *     tags:
+ *      - Scenes
+ *     parameters:
+ *     - $ref: '#/parameters/groupId'
+ *     produces:
+ *      - application/json
+ *     responses:
+ *       200:
+ *         description: Returns all Scenes for a Group
+ *         schema:
+ *           type: array
+ *           items:
+ *             $ref: '#/definitions/Scene'
+ *   post:
+ *     description: Create a Scene
+ *     tags:
+ *      - Scenes
+ *     parameters:
+ *       - $ref: '#/parameters/groupId'
+ *       - $ref: '#/parameters/sceneName'
+ *       - $ref: '#/parameters/sceneDescription'
+ *     consumes:
+ *      - application/x-www-form-urlencoded
+ *     produces:
+ *      - application/json
+ *     responses:
+ *       200:
+ *         description: Returns ID of new Scene
+ *         schema:
+ *           type: object
+ */
 router.get('/', function (req, res) {
     var groupID = req.params.group;
     
@@ -40,6 +77,43 @@ router.post('/', bodyParser.urlencoded({ extended: true }), function (req, res) 
     });
 });
 
+
+/**
+ * @swagger
+ * /scene/{sceneId}:
+ *   get:
+ *     description: Get Scene by ID
+ *     tags:
+ *      - Scenes
+ *     parameters:
+ *     - $ref: '#/parameters/sceneId'
+ *     produces:
+ *      - application/json
+ *     responses:
+ *       200:
+ *         description: Returns a Scene
+ *         schema:
+ *           type: array
+ *           items:
+ *             $ref: '#/definitions/Scene'
+ *   put:
+ *     description: Edit a Scene
+ *     tags:
+ *      - Scenes
+ *     parameters:
+ *       - $ref: '#/parameters/sceneId'
+ *       - $ref: '#/parameters/sceneName'
+ *       - $ref: '#/parameters/sceneDescription'
+ *     consumes:
+ *      - application/x-www-form-urlencoded
+ *     produces:
+ *      - application/json
+ *     responses:
+ *       200:
+ *         description: Returns ID of edited Scene
+ *         schema:
+ *           type: object
+ */
 router.get('/:scene', function (req, res) {
     var sceneID = req.params.scene;
     model.Scene.find({where: {id: sceneID}}).then(function (scene) {
@@ -62,7 +136,7 @@ router.put('/:scene', bodyParser.urlencoded({ extended: true }), function (req, 
     });
 });
 
-const ignoredProperties = {
+var ignoredProperties = {
     id: true,
     groupID: true
 };

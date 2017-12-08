@@ -1,15 +1,53 @@
-const express = require('express');
-const model = require("../model");
-const router = express.Router({mergeParams: true});
-const figureRouter = require("./figures");
-const bodyParser = require('body-parser');
-const accessControl = require("../access-control");
+var express = require('express'),
+    model = require("../model"),
+    router = express.Router({mergeParams: true}),
+    figureRouter = require("./figures"),
+    bodyParser = require('body-parser'),
+    accessControl = require("../access-control");
 
 router.use("/:version/figure", figureRouter);
 
 
 
 router.use(accessControl);
+
+/**
+ * @swagger
+ * /scene/{sceneId}/version:
+ *   get:
+ *     description: Get all Versions for a Scene
+ *     tags:
+ *      - Versions
+ *     parameters:
+ *     - $ref: '#/parameters/sceneId'
+ *     produces:
+ *      - application/json
+ *     responses:
+ *       200:
+ *         description: Returns all Versions for a Scene
+ *         schema:
+ *           type: array
+ *           items:
+ *             $ref: '#/definitions/Scene'
+ *   post:
+ *     description: Create a Scene
+ *     tags:
+ *      - Versions
+ *     parameters:
+ *       - $ref: '#/parameters/sceneId'
+ *       - $ref: '#/parameters/versionName'
+ *       - $ref: '#/parameters/figures'
+ *       - $ref: '#/parameters/layers'
+ *     consumes:
+ *      - application/x-www-form-urlencoded
+ *     produces:
+ *      - application/json
+ *     responses:
+ *       200:
+ *         description: Returns ID of new Version
+ *         schema:
+ *           type: object
+ */
 router.get('/', function (req, res) {
     var sceneID = req.params.scene;
     model.Version.findAll({where: {sceneId: sceneID}}).then(function (versions) {
@@ -39,6 +77,43 @@ router.post('/', bodyParser.urlencoded({ extended: true }), function (req, res) 
     });
 });
 
+
+/**
+ * @swagger
+ * /version/{sceneId}:
+ *   get:
+ *     description: Get Version by ID
+ *     tags:
+ *      - Versions
+ *     parameters:
+ *     - $ref: '#/parameters/versionId'
+ *     produces:
+ *      - application/json
+ *     responses:
+ *       200:
+ *         description: Returns Version object
+ *         schema:
+ *           type: array
+ *           items:
+ *             $ref: '#/definitions/Version'
+ *   put:
+ *     description: Edit a Version
+ *     tags:
+ *      - Versions
+ *     parameters:
+ *       - $ref: '#/parameters/versionId'
+ *       - $ref: '#/parameters/versionName'
+ *       - $ref: '#/parameters/layers'
+ *     consumes:
+ *      - application/x-www-form-urlencoded
+ *     produces:
+ *      - application/json
+ *     responses:
+ *       200:
+ *         description: Returns ID of edited Version
+ *         schema:
+ *           type: object
+ */
 router.get('/:version', function (req, res) {
     var versionID = req.params.version;
     model.Version.find({where: {id: versionID}}).then(function (versions) {
@@ -62,6 +137,8 @@ router.put('/:version', bodyParser.urlencoded({ extended: true }), function (req
         res.send(error);
     });
 });
+
+
 
 function updateVersionWithoutFigures (rawVersion, versionID) {
     return model.Version.update(rawVersion, {where: {id: versionID}});
@@ -93,7 +170,7 @@ function arrayToSet (array) {
     return set;
 }
 
-const ignoredProperties = {
+ ignoredProperties = {
     id: true,
     sceneID: true
 };
