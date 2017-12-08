@@ -34,6 +34,8 @@ router.use(accessControl);
  *       - $ref: '#/parameters/geometry'
  *       - $ref: '#/parameters/figureProperties'
  *       - $ref: '#/parameters/figureType'
+ *       - $ref: '#/parameters/figureParent'
+ *       - $ref: '#/parameters/figurePrevious'
  *     consumes:
  *      - application/x-www-form-urlencoded
  *     produces:
@@ -125,6 +127,8 @@ router.all('/:figure', function (req, res, next) {
  *       - $ref: '#/parameters/geometry'
  *       - $ref: '#/parameters/figureProperties'
  *       - $ref: '#/parameters/figureType'
+ *       - $ref: '#/parameters/figureParent'
+ *       - $ref: '#/parameters/figurePrevious'
  *     consumes:
  *      - application/x-www-form-urlencoded
  *     produces:

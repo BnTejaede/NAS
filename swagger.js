@@ -1,4 +1,4 @@
-var definition = require("sequelize-json-schema"),
+var swaggerizeModel = require("sequelize-json-schema"),
     fs = require("fs-extra"),
     swaggerJSDoc = require('swagger-jsdoc'),
     model = require("./logic/model");
@@ -35,7 +35,7 @@ var SPECIAL_PARAMETERS = {
     },{
         swaggerName: "figurePrevious",
         name: "previousId",
-        description: "Numeric ID of the Figure behing which to insert this figure",
+        description: "Numeric ID of the Figure behind which to insert this figure",
         type: "string",
         in: "formData"
     },{
@@ -69,11 +69,11 @@ module.exports = (function () {
     //TODO Move to external file
     var swaggerDefinition = {
             info: { // API informations (required)
-                title: 'Hello World', // Title (required)
+                title: 'Biosurveillance Scenes', // Title (required)
                 version: '1.0.0', // Version (required)
-                description: 'A sample API', // Description (optional)
+                description: 'API to allow collaborative, versioned annotations of geospatial areas.', // Description (optional)
             },
-            host: 'localhost:3000', // Host (optional)
+            host: 'http://localhost:8000', // Host (optional)
             basePath: '/', // Base path (optional)
         },
         jsDocOptions = {
@@ -90,7 +90,7 @@ module.exports = (function () {
 
     for (var key in model) {
         if (!excludedKeys[key]) {
-            spec.definitions[key] = definition(model[key]);
+            spec.definitions[key] = swaggerizeModel(model[key]);
             mapParametersForType(spec.parameters, key);
         }
     }
