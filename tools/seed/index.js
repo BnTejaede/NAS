@@ -1,6 +1,6 @@
-const Sequelize = require("sequelize");
-const model = require("../../logic/model");
-const seedData = require("./data/figures-hierarchy.json");
+var Sequelize = require("sequelize"),
+    model = require("../../logic/model"),
+    seedData = require("./data/figures-hierarchy.json");
 
 
 
@@ -95,7 +95,7 @@ function setFigureParent (rawFigure) {
     return parent ? parent.addChild(figure) : Promise.resolve(null);
 }
 
-const ignoredProperties = {
+var ignoredProperties = {
     identifier: true,
     groupIdentifier: true,
     sceneIdentifier: true,
@@ -172,7 +172,9 @@ function populateRawDataCache() {
 
 function populateSeedData () {
     populateRawDataCache();
+    console.log("ClearDataBase....");
     return clearDatabase().then(function () {
+        console.log("Done!");
         return iterateWithActions(seedData.groups.slice(), createGroup);
     }).then(function () {
         return iterateWithActions(seedData.scenes.slice(), createScene);
@@ -191,5 +193,6 @@ function populateSeedData () {
     });
 }
 
-// populateSeedData();
+// clearDatabase();
+populateSeedData();
 

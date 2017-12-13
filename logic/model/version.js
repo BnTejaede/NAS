@@ -5,6 +5,9 @@ module.exports = function(sequelize, DataTypes) {
         },
         layers: {
             type: DataTypes.STRING
+        },
+        bounds: {
+            type: DataTypes.STRING
         }
     });
 
