@@ -73,7 +73,7 @@
     <div data-montage-id="main" class="Main">
         <select>
             <option value="group">Group</option>
-            <option value="scene">Scene</option>
+            <option value="bookmark">Bookmark</option>
             <option value="version">Version</option>
             <option value="figure">Figure</option>
         </select>
@@ -96,15 +96,15 @@
                 <input type="submit" />
             </form>
         </div>
-        <div id="scene-page" class="page">
-            <form action="../group/${groupID}/scene" method="POST">
+        <div id="bookmark-page" class="page">
+            <form action="../group/${groupID}/bookmark" method="POST">
                 <h3>Create</h3>
                 <input type="text" name="groupID" placeholder="Group ID" value="2"/>
                 <input type="text" name="name" placeholder="Name" value="Test Name"/>
                 <input type="text" name="description" placeholder="Description" value="A Description"/>
                 <input type="submit" />
             </form>
-            <form action="../group/${groupID}/scene" method="PUT">
+            <form action="../group/${groupID}/bookmark" method="PUT">
                 <h3>Edit</h3>
                 <input type="text" name="groupID" placeholder="Group ID"/>
                 <input type="text" name="id" placeholder="ID" value="3"/>
@@ -114,28 +114,28 @@
             </form>
         </div>
         <div id="version-page" class="page">
-            <form action="../group/${groupID}/scene/${sceneID}/version" method="POST">
+            <form action="../group/${groupID}/bookmark/${bookmarkID}/version" method="POST">
                 <h3>Create</h3>
                 <input type="text" name="groupID" placeholder="Group ID" />
-                <input type="text" name="sceneID" placeholder="Scene ID" />
+                <input type="text" name="bookmarkID" placeholder="Bookmark ID" />
                 <input type="text" name="name" placeholder="Name" value="Test Name"/>
                 <input type="text" name="figures" placeholder="Figures" value=""/>
                 <input type="submit" />
             </form>
-            <form action="../group/${groupID}/scene/${sceneID}/version" method="PUT">
+            <form action="../group/${groupID}/bookmark/${bookmarkID}/version" method="PUT">
                 <h3>Edit</h3>
                 <input type="text" name="groupID" placeholder="Group ID" />
-                <input type="text" name="sceneID" placeholder="Scene ID" />
+                <input type="text" name="bookmarkID" placeholder="Bookmark ID" />
                 <input type="text" name="id" placeholder="ID" />
                 <input type="text" name="name" placeholder="Name" value="Edit Name"/>
                 <input type="submit" />
             </form>
         </div>
         <div id="figure-page" class="page">
-            <form action="../group/${groupID}/scene/${sceneID}/version/${versionID}/figure" method="POST">
+            <form action="../group/${groupID}/bookmark/${bookmarkID}/version/${versionID}/figure" method="POST">
                 <h3>Create</h3>
                 <input type="text" name="groupID" placeholder="Group ID" />
-                <input type="text" name="sceneID" placeholder="Scene ID" />
+                <input type="text" name="bookmarkID" placeholder="Bookmark ID" />
                 <input type="text" name="versionID" placeholder="Version ID" />
                 <input type="text" name="parentID" placeholder="Parent ID" />
                 <input type="text" name="name" placeholder="Name" value="Figure Name"/>
@@ -144,10 +144,10 @@
                 <input type="text" name="properties" placeholder="Properties" />
                 <input type="submit" />
             </form>
-            <form action="../group/${groupID}/scene/${sceneID}/version/${versionID}/figure" method="PUT">
+            <form action="../group/${groupID}/bookmark/${bookmarkID}/version/${versionID}/figure" method="PUT">
                 <h3>Edit</h3>
                 <input type="text" name="groupID" placeholder="Group ID" />
-                <input type="text" name="sceneID" placeholder="Scene ID" />
+                <input type="text" name="bookmarkID" placeholder="Bookmark ID" />
                 <input type="text" name="versionID" placeholder="Version ID" />
                 <input type="text" name="parentID" placeholder="Parent ID" />
                 <input type="text" name="id" placeholder="ID" />

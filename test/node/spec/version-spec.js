@@ -6,7 +6,7 @@ describe("Versions", function () {
     it("can be created", function (done) {
         model.Version.create({
             name: "Test Version",
-            sceneId: 1
+            bookmarkId: 1
         }).then(function (item) {
             expect(item.id).toBeDefined();
             done();
@@ -16,7 +16,7 @@ describe("Versions", function () {
     it("can be created with figures", function (done) {
         model.Version.create({
             name: "Test Version with Figures",
-            sceneId: 1,
+            bookmarkId: 1,
             figures: [
                 {
                     name: "Figure Folder",

@@ -2,12 +2,12 @@ var express = require('express'),
     accessControl = require("../access-control"),
     model = require("../model"),
     router = express.Router(),
-    sceneRouter = require("./scenes"),
+    bookmarkRouter = require("./bookmarks"),
     bodyParser = require('body-parser');
 
 
 router.use(accessControl);
-router.use("/:group/scene", sceneRouter);
+router.use("/:group/bookmark", bookmarkRouter);
 
 
 /**

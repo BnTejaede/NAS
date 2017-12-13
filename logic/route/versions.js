@@ -13,28 +13,28 @@ router.use(accessControl);
 
 /**
  * @swagger
- * /scene/{sceneId}/version:
+ * /bookmark/{bookmarkId}/version:
  *   get:
- *     description: Get all Versions for a Scene
+ *     description: Get all Versions for a Bookmark
  *     tags:
  *      - Versions
  *     parameters:
- *     - $ref: '#/parameters/sceneId'
+ *     - $ref: '#/parameters/bookmarkId'
  *     produces:
  *      - application/json
  *     responses:
  *       200:
- *         description: Returns all Versions for a Scene
+ *         description: Returns all Versions for a Bookmark
  *         schema:
  *           type: array
  *           items:
- *             $ref: '#/definitions/Scene'
+ *             $ref: '#/definitions/Bookmark'
  *   post:
- *     description: Create a Scene
+ *     description: Create a Bookmark
  *     tags:
  *      - Versions
  *     parameters:
- *       - $ref: '#/parameters/sceneId'
+ *       - $ref: '#/parameters/bookmarkId'
  *       - $ref: '#/parameters/versionName'
  *       - $ref: '#/parameters/figures'
  *       - $ref: '#/parameters/layers'
@@ -49,8 +49,8 @@ router.use(accessControl);
  *           type: object
  */
 router.get('/', function (req, res) {
-    var sceneID = req.params.scene;
-    model.Version.findAll({where: {sceneId: sceneID}}).then(function (versions) {
+    var bookmarkID = req.params.bookmark;
+    model.Version.findAll({where: {bookmarkId: bookmarkID}}).then(function (versions) {
         res.send({
             items: versions
         });
@@ -59,16 +59,16 @@ router.get('/', function (req, res) {
 
 router.post('/', bodyParser.urlencoded({ extended: true }), function (req, res) {
     var rawVersion = mapProperties(req.body),
-        sceneID = req.params.scene,
+        bookmarkID = req.params.bookmark,
         version, options;
 
-    rawVersion.sceneId = sceneID;
+    rawVersion.bookmarkId = bookmarkID;
     rawVersion.figures = rawVersion.figures ? JSON.parse(rawVersion.figures) : [];
     mapFiguresToRawData(rawVersion.figures);
 
     version = model.Version.create(rawVersion).then(function (version) {
         res.send({
-            sceneID: sceneID,
+            bookmarkID: bookmarkID,
             id: version.id
         });
     }).catch(function (error) {
@@ -80,7 +80,7 @@ router.post('/', bodyParser.urlencoded({ extended: true }), function (req, res) 
 
 /**
  * @swagger
- * /version/{sceneId}:
+ * /version/{bookmarkId}:
  *   get:
  *     description: Get Version by ID
  *     tags:
@@ -172,7 +172,7 @@ function arrayToSet (array) {
 
  ignoredProperties = {
     id: true,
-    sceneID: true
+    bookmarkID: true
 };
 
 function mapProperties(object) {

@@ -1,8 +1,8 @@
 {
-    "scenes": [
+    "bookmarks": [
         {
             "groupID": 1183,
-            "name": "Scene A",
+            "name": "Bookmark A",
             "figures": [
                 {
                     "id": "F1",

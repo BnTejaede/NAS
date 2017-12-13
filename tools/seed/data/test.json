@@ -1,0 +1,343 @@
+{
+    "groups": [
+        {
+            "city": "Baltimore",
+            "country": "USA",
+            "createdAt": "2017-11-11 23:20:55.684 +00:00",
+            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut imperdiet, mauris eget consectetur lacinia, magna odio mollis risus, identifier aliquam dolor quam eu leo. Nam gravidentifiera blandit lacus, vitae lacinia enim faucibus vel. Nam diam velit, molestie a odio eu, dictum molestie odio.",
+            "identifier": "G1",
+            "name": "Public Standard Group 1",
+            "updatedAt": "2017-11-11 23:20:55.684 +00:00"
+        }
+    ],
+    "bookmarks": [
+        {
+            "createdAt": "2017-11-11 23:20:55.696 +00:00",
+            "defaultVersionIdentifier": "",
+            "description": "A public Bookmark, viewable by whoever",
+            "groupIdentifier": "G1",
+            "identifier": "B1",
+            "name": "Public Standard Bookmark 1",
+            "updatedAt": "2017-11-11 23:20:55.707 +00:00"
+        },
+        {
+            "createdAt": "2017-12-01 01:20:08.331 +00:00",
+            "defaultVersionIdentifier": "",
+            "description": "",
+            "groupIdentifier": "G1",
+            "identifier": "B2",
+            "name": "Test Bookmark",
+            "updatedAt": "2017-12-01 01:20:08.331 +00:00"
+        },
+        {
+            "createdAt": "2017-12-01 01:20:08.340 +00:00",
+            "defaultVersionIdentifier": "",
+            "description": "",
+            "groupIdentifier": "G1",
+            "identifier": "B3",
+            "name": "Test Bookmark",
+            "updatedAt": "2017-12-01 01:20:08.348 +00:00"
+        }
+    ],
+    "versions": [
+        {
+            "createdAt": "2017-11-11 23:20:55.702 +00:00",
+            "identifier": "V1",
+            "layers": "[{\"id\": \"HnP_hazards\", \"opacity\": 1},{\"id\": \"Google_Hybrid\", \"opacity\": 1}, {\"id\": \"Recent_Earthquakes\", \"opacity\": 1}]",
+            "bounds": "{\"xMin\": -145, \"xMax\": -125, \"yMin\": 15, \"yMax\": 35}",
+            "name": "Version 1",
+            "bookmarkIdentifier": "B1",
+            "updatedAt": "2017-11-11 23:20:55.702 +00:00"
+        },
+        {
+            "createdAt": "2017-12-01 01:20:08.344 +00:00",
+            "identifier": "V2",
+            "layers": "[{\"id\": \"HnP_hazards\", \"opacity\": 1},{\"id\": \"Google_Hybrid\", \"opacity\": 1}, {\"id\": \"Recent_Earthquakes\", \"opacity\": 1}]",
+            "bounds": "{\"xMin\": -145, \"xMax\": -125, \"yMin\": 15, \"yMax\": 35}",
+            "name": "First Version",
+            "bookmarkIdentifier": "B3",
+            "updatedAt": "2017-12-01 01:20:08.344 +00:00"
+        },
+        {
+            "createdAt": "2017-12-01 01:20:08.352 +00:00",
+            "identifier": "V3",
+            "layers": "[{\"id\": \"HnP_hazards\", \"opacity\": 1},{\"id\": \"Google_Hybrid\", \"opacity\": 1}, {\"id\": \"Recent_Earthquakes\", \"opacity\": 1}]",
+            "bounds": "{\"xMin\": -145, \"xMax\": -125, \"yMin\": 15, \"yMax\": 35}",
+            "name": "Test Version",
+            "bookmarkIdentifier": "B1",
+            "updatedAt": "2017-12-01 01:20:08.352 +00:00"
+        },
+        {
+            "createdAt": "2017-12-01 01:20:08.357 +00:00",
+            "identifier": "V4",
+            "layers": "[{\"id\": \"HnP_hazards\", \"opacity\": 1},{\"id\": \"Google_Hybrid\", \"opacity\": 1}, {\"id\": \"Recent_Earthquakes\", \"opacity\": 1}]",
+            "bounds": "{\"xMin\": -145, \"xMax\": -125, \"yMin\": 15, \"yMax\": 35}",
+            "name": "Test Version with Figures",
+            "bookmarkIdentifier": "B1",
+            "updatedAt": "2017-12-01 01:20:08.357 +00:00"
+        }
+    ],
+    "figures": [
+    {
+        "createdAt": "2017-11-11 23:20:55.725 +00:00",
+        "geometry": "",
+        "identifier": "F1",
+        "name": "Folder 1",
+        "parentIdentifier": "",
+        "previousIdentifier": "",
+        "properties": "",
+        "type": "",
+        "updatedAt": "2017-11-11 23:20:55.725 +00:00",
+        "version": "0",
+        "versionIdentifier": "V1"
+    },
+    {
+        "createdAt": "2017-11-11 23:20:55.738 +00:00",
+        "geometry": "",
+        "identifier": "F2",
+        "name": "Folder 2",
+        "parentIdentifier": "",
+        "previousIdentifier": "F1",
+        "properties": "",
+        "type": "",
+        "updatedAt": "2017-11-11 23:20:55.738 +00:00",
+        "version": "0",
+        "versionIdentifier": "V1"
+    },
+    {
+        "createdAt": "2017-11-11 23:20:55.753 +00:00",
+        "geometry": "",
+        "identifier": "F3",
+        "name": "Folder 3",
+        "parentIdentifier": "F1",
+        "previousIdentifier": "",
+        "properties": "",
+        "type": "",
+        "updatedAt": "2017-11-11 23:20:55.922 +00:00",
+        "version": "0",
+        "versionIdentifier": "V1"
+    },
+    {
+        "createdAt": "2017-11-11 23:20:55.764 +00:00",
+        "geometry": "",
+        "identifier": "F4",
+        "name": "Folder 4",
+        "parentIdentifier": "F1",
+        "previousIdentifier": "F3",
+        "properties": "",
+        "type": "",
+        "updatedAt": "2017-11-11 23:20:55.940 +00:00",
+        "version": "0",
+        "versionIdentifier": "V1"
+    },
+    {
+        "createdAt": "2017-11-11 23:20:55.775 +00:00",
+        "geometry": "",
+        "identifier": "F5",
+        "name": "Folder 5",
+        "parentIdentifier": "F1",
+        "previousIdentifier": "F4",
+        "properties": "",
+        "type": "",
+        "updatedAt": "2017-11-11 23:20:55.950 +00:00",
+        "version": "0",
+        "versionIdentifier": "V1"
+    },
+    {
+        "createdAt": "2017-11-11 23:20:55.785 +00:00",
+        "geometry": "",
+        "identifier": "F6",
+        "name": "Folder 6",
+        "parentIdentifier": "F1",
+        "previousIdentifier": "F5",
+        "properties": "",
+        "type": "",
+        "updatedAt": "2017-11-11 23:20:55.962 +00:00",
+        "version": "0",
+        "versionIdentifier": "V1"
+    },
+    {
+        "createdAt": "2017-11-11 23:20:55.795 +00:00",
+        "geometry": "",
+        "identifier": "F7",
+        "name": "Folder 7",
+        "parentIdentifier": "F1",
+        "previousIdentifier": "F6",
+        "properties": "",
+        "type": "",
+        "updatedAt": "2017-11-11 23:20:55.975 +00:00",
+        "version": "0",
+        "versionIdentifier": "V1"
+    },
+    {
+        "createdAt": "2017-11-11 23:20:55.803 +00:00",
+        "geometry": "",
+        "identifier": "F8",
+        "name": "Folder 8",
+        "parentIdentifier": "F2",
+        "previousIdentifier": "",
+        "properties": "",
+        "type": "",
+        "updatedAt": "2017-11-11 23:20:55.985 +00:00",
+        "version": "0",
+        "versionIdentifier": "V1"
+    },
+    {
+        "createdAt": "2017-11-11 23:20:55.811 +00:00",
+        "geometry": "",
+        "identifier": "F9",
+        "name": "Folder 9",
+        "parentIdentifier": "F2",
+        "previousIdentifier": "F8",
+        "properties": "",
+        "type": "",
+        "updatedAt": "2017-11-11 23:20:55.997 +00:00",
+        "version": "0",
+        "versionIdentifier": "V1"
+    },
+    {
+        "createdAt": "2017-11-11 23:20:55.822 +00:00",
+        "geometry": "",
+        "identifier": "F10",
+        "name": "Folder 10",
+        "parentIdentifier": "F2",
+        "previousIdentifier": "F9",
+        "properties": "",
+        "type": "",
+        "updatedAt": "2017-11-11 23:20:56.009 +00:00",
+        "version": "0",
+        "versionIdentifier": "V1"
+    },
+    {
+        "createdAt": "2017-11-11 23:20:55.835 +00:00",
+        "geometry": "",
+        "identifier": "F11",
+        "name": "Folder 11",
+        "parentIdentifier": "F2",
+        "previousIdentifier": "F10",
+        "properties": "",
+        "type": "",
+        "updatedAt": "2017-11-11 23:20:56.023 +00:00",
+        "version": "0",
+        "versionIdentifier": "V1"
+    },
+    {
+        "createdAt": "2017-11-11 23:20:55.848 +00:00",
+        "geometry": "",
+        "identifier": "F12",
+        "name": "Folder 12",
+        "parentIdentifier": "F1",
+        "previousIdentifier": "F7",
+        "properties": "",
+        "type": "",
+        "updatedAt": "2017-11-11 23:20:56.034 +00:00",
+        "version": "0",
+        "versionIdentifier": "V1"
+    },
+    {
+        "createdAt": "2017-11-11 23:20:55.855 +00:00",
+        "geometry": "",
+        "identifier": "F13",
+        "name": "Folder 13",
+        "parentIdentifier": "F1",
+        "previousIdentifier": "F12",
+        "properties": "",
+        "type": "",
+        "updatedAt": "2017-11-11 23:20:56.049 +00:00",
+        "version": "0",
+        "versionIdentifier": "V1"
+    },
+    {
+        "createdAt": "2017-11-11 23:20:55.868 +00:00",
+        "geometry": "",
+        "identifier": "F14",
+        "name": "Folder 14",
+        "parentIdentifier": "",
+        "previousIdentifier": "F2",
+        "properties": "",
+        "type": "",
+        "updatedAt": "2017-11-11 23:20:56.053 +00:00",
+        "version": "0",
+        "versionIdentifier": "V1"
+    },
+    {
+        "createdAt": "2017-11-11 23:20:55.881 +00:00",
+        "geometry": "",
+        "identifier": "F15",
+        "name": "Folder 15",
+        "parentIdentifier": "F14",
+        "previousIdentifier": "",
+        "properties": "",
+        "type": "",
+        "updatedAt": "2017-11-11 23:20:56.063 +00:00",
+        "version": "0",
+        "versionIdentifier": "V1"
+    },
+    {
+        "createdAt": "2017-11-11 23:20:55.890 +00:00",
+        "geometry": "",
+        "identifier": "F16",
+        "name": "Folder 16",
+        "parentIdentifier": "F14",
+        "previousIdentifier": "F15",
+        "properties": "",
+        "type": "",
+        "updatedAt": "2017-11-11 23:20:56.072 +00:00",
+        "version": "0",
+        "versionIdentifier": "V1"
+    },
+    {
+        "createdAt": "2017-11-11 23:20:55.896 +00:00",
+        "geometry": "",
+        "identifier": "F17",
+        "name": "Folder 17",
+        "parentIdentifier": "F14",
+        "previousIdentifier": "F16",
+        "properties": "",
+        "type": "",
+        "updatedAt": "2017-11-11 23:20:56.082 +00:00",
+        "version": "0",
+        "versionIdentifier": "V1"
+    },
+    {
+        "createdAt": "2017-11-11 23:20:55.904 +00:00",
+        "geometry": "",
+        "identifier": "F18",
+        "name": "Folder 18",
+        "parentIdentifier": "F14",
+        "previousIdentifier": "F17",
+        "properties": "",
+        "type": "",
+        "updatedAt": "2017-11-11 23:20:56.093 +00:00",
+        "version": "0",
+        "versionIdentifier": "V1"
+    },
+    {
+        "createdAt": "2017-11-11 23:20:55.911 +00:00",
+        "geometry": "",
+        "identifier": "F19",
+        "name": "Folder 19",
+        "parentIdentifier": "F14",
+        "previousIdentifier": "F18",
+        "properties": "",
+        "type": "",
+        "updatedAt": "2017-11-11 23:20:56.105 +00:00",
+        "version": "0",
+        "versionIdentifier": "V1"
+    },
+    {
+        "createdAt": "2017-11-11 23:20:55.919 +00:00",
+        "geometry": "",
+        "identifier": "F20",
+        "name": "Folder 20",
+        "parentIdentifier": "F14",
+        "previousIdentifier": "F19",
+        "properties": "",
+        "type": "",
+        "updatedAt": "2017-11-11 23:20:56.116 +00:00",
+        "version": "0",
+        "versionIdentifier": "V1"
+    }
+]
+
+}

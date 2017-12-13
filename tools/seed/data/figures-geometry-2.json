@@ -15,18 +15,18 @@
             "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut imperdiet, mauris eget consectetur lacinia, magna odio mollis risus, id aliquam dolor quam eu leo. Nam gravida blandit lacus, vitae lacinia enim faucibus vel. Nam diam velit, molestie a odio eu, dictum molestie odio."
         }
     ],
-    "scenes": [
+    "bookmarks": [
         {
             "identifier": "S1",
             "groupIdentifier": "G1",
-            "name": "Public Standard Scene 1",
-            "description": "A public scene, viewable by whoever"
+            "name": "Public Standard Bookmark 1",
+            "description": "A public bookmark, viewable by whoever"
         },
         {
             "identifier": "S2",
             "groupIdentifier": "G2",
-            "name": "Public Standard Scene 2",
-            "description": "A public scene, viewable by whoever"
+            "name": "Public Standard Bookmark 2",
+            "description": "A public bookmark, viewable by whoever"
         },
         {
             "identifier": "S3",
@@ -38,28 +38,28 @@
             "identifier": "S4",
             "groupIdentifier": "G2",
             "name": "SEL Public",
-            "description": "A public scene for Selenium automated testing"
+            "description": "A public bookmark for Selenium automated testing"
         }
     ],
     "versions": [
         {
             "identifier": "V1",
-            "sceneIdentifier": "S1",
+            "bookmarkIdentifier": "S1",
             "name": "Version 1"
         },
         {
             "identifier": "V2",
-            "sceneIdentifier": "S1",
+            "bookmarkIdentifier": "S1",
             "name": "Version 2"
         },
         {
             "identifier": "V3",
-            "sceneIdentifier": "S2",
+            "bookmarkIdentifier": "S2",
             "name": "SEL Version Test for 8.2"
         },
         {
             "identifier": "V4",
-            "sceneIdentifier": "S2",
+            "bookmarkIdentifier": "S2",
             "name": "SEL Public Version"
         }
     ],

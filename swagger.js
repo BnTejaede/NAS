@@ -69,7 +69,7 @@ module.exports = (function () {
     //TODO Move to external file
     var swaggerDefinition = {
             info: { // API informations (required)
-                title: 'Biosurveillance Scenes', // Title (required)
+                title: 'Biosurveillance Bookmarks', // Title (required)
                 version: '1.0.0', // Version (required)
                 description: 'API to allow collaborative, versioned annotations of geospatial areas.', // Description (optional)
             },

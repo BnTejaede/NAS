@@ -1,22 +1,22 @@
 describe("Figure API", function () {
     var host = "http://localhost:8000/";
     
-    it("can fetch figures for group, scene, and version", function (done) {
-        sendRequest(host + "group/1/scene/1/version/1/figure", "GET").then(function (data) {
+    it("can fetch figures for group, bookmark, and version", function (done) {
+        sendRequest(host + "group/1/bookmark/1/version/1/figure", "GET").then(function (data) {
             expect(data).toBeDefined();
             done();
         });
     });
 
-    it("can fetch figure for group, scene, version, and id", function (done) {
+    it("can fetch figure for group, bookmark, version, and id", function (done) {
         var groupID = 1,
-            sceneID = 1,
+            bookmarkID = 1,
             versionID = 1,
             figureID = 1,
             url = host;
 
             url += "group/" + groupID + "/";
-            url += "scene/" + sceneID + "/";
+            url += "bookmark/" + bookmarkID + "/";
             url += "version/" + versionID + "/";
             url += "figure/" + figureID;
 
@@ -70,7 +70,7 @@ describe("Figure API", function () {
 
     it("can move figure with position", function (done) {
         var groupID = 1,
-            sceneID = 1,
+            bookmarkID = 1,
             versionID = 1,
             allFigureURL = host,
             url = host + "figure/",
@@ -79,7 +79,7 @@ describe("Figure API", function () {
             toMove;
 
             allFigureURL += "group/" + groupID + "/";
-            allFigureURL += "scene/" + sceneID + "/";
+            allFigureURL += "bookmark/" + bookmarkID + "/";
             allFigureURL += "version/" + versionID + "/";
             allFigureURL += "figure/";
 
@@ -111,7 +111,7 @@ describe("Figure API", function () {
 
     it("can move figure with position & name", function (done) {
         var groupID = 1,
-            sceneID = 1,
+            bookmarkID = 1,
             versionID = 1,
             allFigureURL = host,
             url = host + "figure/",
@@ -121,7 +121,7 @@ describe("Figure API", function () {
             toMove;
 
             allFigureURL += "group/" + groupID + "/";
-            allFigureURL += "scene/" + sceneID + "/";
+            allFigureURL += "bookmark/" + bookmarkID + "/";
             allFigureURL += "version/" + versionID + "/";
             allFigureURL += "figure/";
 
@@ -155,7 +155,7 @@ describe("Figure API", function () {
 
     it("can move figure with position & parent", function (done) {
         var groupID = 1,
-            sceneID = 1,
+            bookmarkID = 1,
             versionID = 1,
             allFigureURL = host,
             url = host + "figure/",
@@ -165,7 +165,7 @@ describe("Figure API", function () {
             toMove;
 
             allFigureURL += "group/" + groupID + "/";
-            allFigureURL += "scene/" + sceneID + "/";
+            allFigureURL += "bookmark/" + bookmarkID + "/";
             allFigureURL += "version/" + versionID + "/";
             allFigureURL += "figure/";
 
@@ -201,7 +201,7 @@ describe("Figure API", function () {
 
     it("can reorder children", function (done) {
             var groupID = 1,
-                sceneID = 1,
+                bookmarkID = 1,
                 versionID = 1,
                 allFigureURL = host,
                 url = host + "figure/",
@@ -211,7 +211,7 @@ describe("Figure API", function () {
                 operations, order;
 
             allFigureURL += "group/" + groupID + "/";
-            allFigureURL += "scene/" + sceneID + "/";
+            allFigureURL += "bookmark/" + bookmarkID + "/";
             allFigureURL += "version/" + versionID + "/";
             allFigureURL += "figure/";
 
@@ -220,7 +220,7 @@ describe("Figure API", function () {
             var figures = buildFiguresCache(data.items),
                 roots = figures.tree,
                 root = roots[2];
-            debugger;
+                
             toMove = root.children[fromIndex].id;
             oldPrevious = root.children[fromIndex - 1] && root.children[fromIndex - 1].id || null;
             oldFollower = root.children[fromIndex + 1] && root.children[fromIndex + 1].id || null;
@@ -254,14 +254,14 @@ describe("Figure API", function () {
 
     it("can delete leaf", function (done) {
         var groupID = 1,
-            sceneID = 1,
+            bookmarkID = 1,
             versionID = 1,
             allFigureURL = host,
             url = host + "figure/",
             count, toDelete;
 
         allFigureURL += "group/" + groupID + "/";
-        allFigureURL += "scene/" + sceneID + "/";
+        allFigureURL += "bookmark/" + bookmarkID + "/";
         allFigureURL += "version/" + versionID + "/";
         allFigureURL += "figure/";
 
@@ -298,14 +298,14 @@ describe("Figure API", function () {
 
     it("can delete folder", function (done) {
         var groupID = 1,
-            sceneID = 1,
+            bookmarkID = 1,
             versionID = 1,
             allFigureURL = host,
             url = host + "figure/",
             count, toDelete, deleteCount;
 
         allFigureURL += "group/" + groupID + "/";
-        allFigureURL += "scene/" + sceneID + "/";
+        allFigureURL += "bookmark/" + bookmarkID + "/";
         allFigureURL += "version/" + versionID + "/";
         allFigureURL += "figure/";
 

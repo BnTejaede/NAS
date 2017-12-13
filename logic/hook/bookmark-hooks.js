@@ -4,12 +4,12 @@ var Sequelize = require("sequelize"),
 module.exports = function() {
 
     return {
-        afterCreate: function (scene, options) {
-            if (scene.defaultVersionId === null || scene.defaultVersionId === undefined) {
-                return scene.getVersions().then(function (versions) {
+        afterCreate: function (bookmark, options) {
+            if (bookmark.defaultVersionId === null || bookmark.defaultVersionId === undefined) {
+                return bookmark.getVersions().then(function (versions) {
                     if (versions.length) {
-                        scene.defaultVersionId = versions[0].id;
-                        return scene.save();
+                        bookmark.defaultVersionId = versions[0].id;
+                        return bookmark.save();
                     } else {
                         return null;
                     }
@@ -17,12 +17,12 @@ module.exports = function() {
                 });
             }
         },
-        afterUpdate: function (scene, options) {
-            if (scene.defaultVersionId === null || scene.defaultVersionId === undefined) {
-                return scene.getVersions().then(function (versions) {
+        afterUpdate: function (bookmark, options) {
+            if (bookmark.defaultVersionId === null || bookmark.defaultVersionId === undefined) {
+                return bookmark.getVersions().then(function (versions) {
                     if (versions.length) {
-                        scene.defaultVersionId = versions[0].id;
-                        return scene.save();
+                        bookmark.defaultVersionId = versions[0].id;
+                        return bookmark.save();
                     } else {
                         return null;
                     }

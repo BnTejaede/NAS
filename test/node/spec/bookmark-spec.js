@@ -1,11 +1,11 @@
 const model = require("../../../logic/model");
 const Op = require("sequelize").Op;
 
-describe("Scenes", function () {
+describe("Bookmarks", function () {
 
     it("can be created", function (done) {
-        model.Scene.create({
-            name: "Test Scene",
+        model.Bookmark.create({
+            name: "Test Bookmark",
             groupId: 1
         }).then(function (item) {
             expect(item.id).toBeDefined();
@@ -14,8 +14,8 @@ describe("Scenes", function () {
     });
 
     it("can be created with defaultVersion", function (done) {
-        model.Scene.create({
-            name: "Test Scene",
+        model.Bookmark.create({
+            name: "Test Bookmark",
             groupId: 1,
             versions: [{name: "First Version"}]
         }, {

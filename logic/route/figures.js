@@ -23,7 +23,7 @@ router.use(accessControl);
  *         schema:
  *           type: array
  *           items:
- *             $ref: '#/definitions/Scene'
+ *             $ref: '#/definitions/Bookmark'
  *   post:
  *     description: Create a Figure
  *     tags:
@@ -262,8 +262,8 @@ var ignoredProperties = {
     id: true,
     groupID: true,
     groupId: true,
-    sceneID: true,
-    sceneId: true,
+    bookmarkID: true,
+    bookmarkId: true,
     versionID: true
 };
 

@@ -1,7 +1,7 @@
 var Sequelize = require("sequelize"),
     model = require("../../logic/model"),
-    seedData = require("./data/figures-hierarchy.json");
-
+    // seedData = require("./data/figures-hierarchy.json");
+    seedData = require("./data/test.json");
 
 
 
@@ -11,7 +11,7 @@ var rawDataByIdentifier = {},
 function clearDatabase() {
     return Promise.all([
         model.Group.sync({force: true}),
-        model.Scene.sync({force: true}),
+        model.Bookmark.sync({force: true}),
         model.Version.sync({force: true}),
         model.Figure.sync({force: true})
     ]);
@@ -37,33 +37,33 @@ function createGroup (rawGroup) {
     });
 }
 
-function createScene (rawScene) {
-    var group = dataByRawIdentifier[rawScene.groupIdentifier],
-        mapped = mapProperties(rawScene);
+function createBookmark (rawBookmark) {
+    var group = dataByRawIdentifier[rawBookmark.groupIdentifier],
+        mapped = mapProperties(rawBookmark);
 
     mapped.groupId = group.id;
 
-    return model.Scene.create(mapped).then(function (scene) {
-        dataByRawIdentifier[rawScene.identifier] = scene;
-        return scene;
+    return model.Bookmark.create(mapped).then(function (bookmark) {
+        dataByRawIdentifier[rawBookmark.identifier] = bookmark;
+        return bookmark;
     });
 }
 
 function createVersion (rawVersion) {
-    var scene = dataByRawIdentifier[rawVersion.sceneIdentifier],
+    var bookmark = dataByRawIdentifier[rawVersion.bookmarkIdentifier],
         mapped = mapProperties(rawVersion),
         isDefaultVersion = false;
 
-    mapped.sceneId = scene.id;
-    if (!scenesWithDefaultVersions[scene.id]) {
-        scenesWithDefaultVersions[scene.id] = true;
+    mapped.bookmarkId = bookmark.id;
+    if (!bookmarksWithDefaultVersions[bookmark.id]) {
+        bookmarksWithDefaultVersions[bookmark.id] = true;
         isDefaultVersion = true;
     }
 
     return model.Version.create(mapped).then(function (version) {
         dataByRawIdentifier[rawVersion.identifier] = version;
         if (isDefaultVersion) {
-            return scene.update({
+            return bookmark.update({
                 defaultVersionId: version.id
             }).then(function () {
                 return version;
@@ -74,7 +74,7 @@ function createVersion (rawVersion) {
     });
 }
 
-var scenesWithDefaultVersions = {};
+var bookmarksWithDefaultVersions = {};
 
 function createFigure (rawFigure) {
     var version = dataByRawIdentifier[rawFigure.versionIdentifier],
@@ -98,10 +98,10 @@ function setFigureParent (rawFigure) {
 var ignoredProperties = {
     identifier: true,
     groupIdentifier: true,
-    sceneIdentifier: true,
+    bookmarkIdentifier: true,
     versionIdentifier: true,
     parentIdentifier: true,
-    scenes: true,
+    bookmarks: true,
     versions: true,
     figures: true,
     children: true
@@ -126,19 +126,20 @@ function normalizeValue(value) {
 function populateRawDataCache() {
     seedData.groups.forEach(function (group) {
         rawDataByIdentifier[group.identifier] = group;
-        group.scenes = [];
+        group.bookmarks = [];
     });
     
-    seedData.scenes.forEach(function (scene) {
-        scene.group = rawDataByIdentifier[scene.groupIdentifier];
-        scene.group.scenes.push(scene);
-        rawDataByIdentifier[scene.identifier] = scene;
-        scene.versions = [];
+    seedData.bookmarks.forEach(function (bookmark) {
+        
+        bookmark.group = rawDataByIdentifier[bookmark.groupIdentifier];
+        bookmark.group.bookmarks.push(bookmark);
+        rawDataByIdentifier[bookmark.identifier] = bookmark;
+        bookmark.versions = [];
     });
     
     seedData.versions.forEach(function (version) {
-        version.scene = rawDataByIdentifier[version.sceneIdentifier];
-        version.scene.versions.push(version);
+        version.bookmark = rawDataByIdentifier[version.bookmarkIdentifier];
+        version.bookmark.versions.push(version);
         rawDataByIdentifier[version.identifier] = version;
         version.figures = [];
     });
@@ -172,12 +173,10 @@ function populateRawDataCache() {
 
 function populateSeedData () {
     populateRawDataCache();
-    console.log("ClearDataBase....");
     return clearDatabase().then(function () {
-        console.log("Done!");
         return iterateWithActions(seedData.groups.slice(), createGroup);
     }).then(function () {
-        return iterateWithActions(seedData.scenes.slice(), createScene);
+        return iterateWithActions(seedData.bookmarks.slice(), createBookmark);
     }).then(function () {
         return iterateWithActions(seedData.versions.slice(), createVersion);
     }).then(function () {
@@ -193,6 +192,26 @@ function populateSeedData () {
     });
 }
 
+function populateSeedDataNew() {
+    return clearDatabase().then(function () {
+        return iterateWithActions(groups.slice(), createGroup);
+    }).then(function () {
+        return iterateWithActions(bookmarks.slice(), createBookmark);
+    }).then(function () {
+        return iterateWithActions(versions.slice(), createVersion);
+    }).then(function () {
+        return iterateWithActions(figures.slice(), createFigure);
+    }).then(function () {
+        console.log("FinishCreateFigure....");
+        return iterateWithActions(figures.slice(), setFigureParent);
+    }).then(function () {
+        console.log("FinishSeed....");
+        return dataByRawIdentifier;
+    }).catch(function (e) {
+        console.error(e);
+    });
+}
+
 // clearDatabase();
-populateSeedData();
+// populateSeedData();
 

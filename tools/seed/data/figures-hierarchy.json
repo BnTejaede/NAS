@@ -8,20 +8,20 @@
             "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut imperdiet, mauris eget consectetur lacinia, magna odio mollis risus, id aliquam dolor quam eu leo. Nam gravida blandit lacus, vitae lacinia enim faucibus vel. Nam diam velit, molestie a odio eu, dictum molestie odio."
         }
     ],
-    "scenes": [
+    "bookmarks": [
         {
             "identifier": "S1",
             "groupIdentifier": "G1",
-            "name": "Public Standard Scene 1",
-            "description": "A public scene, viewable by whoever"
+            "name": "Public Standard Bookmark 1",
+            "description": "A public bookmark, viewable by whoever"
         }
     ],
     "versions": [
         {
             "identifier": "V1",
-            "sceneIdentifier": "S1",
+            "bookmarkIdentifier": "S1",
             "name": "Version 1",
-            "layers": "HnP_hazards,Google_Hybrid,Recent_Earthquakes",
+            "layers": "[{id: HnP_hazards, opacity: 1},{id: Google_Hybrid, opacity: 1}, {id: Recent_Earthquakes, opacity: 1}",
             "bounds": "{xMin: -145, xMax: -125, yMin: 15, yMax: 35}"
         }
     ],
