@@ -1,0 +1,12 @@
+{
+  "keys": [
+    {
+      "kty": "RSA",
+      "e": "AQAB",
+      "use": "sig",
+      "kid": "2017-10-12|devemops.pdc.org",
+      "alg": "RS512",
+      "n": "5Dz_2L0alSu9_2kX73KrgoicZwbcuLyjuGKTnxW91TVmXx_dlYRFEmEppBCmAUahTTCNdgysopL61jrfFi5umstYIXPhGfi51phPGkIuP2Cv-ulYnJ3Jso7CLz_V6dvnfIy_pyRAWhEGVTTvxlaD7gBIy1f11ugPqlibXONgiGQ_7w_m0aVjoOMwpucHSyo2m9ec4RfLDFeYgG2j98RA6QZX1RWRono1XDPy1mhT1NQAXdofcCPquqbqXUgNkvSJcGPsAWpdlqM-y8wm0TOcQA9sijqDechROr8zUAcc9TdJtIxd7nEtoUKQKHJrhh9OCpJnoGC28-IVC0qoqxvZBw"
+    }
+  ]
+}

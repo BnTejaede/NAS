@@ -4,6 +4,24 @@ var swaggerizeModel = require("sequelize-json-schema"),
     model = require("./logic/model");
 
 var SPECIAL_PARAMETERS = {
+    user: [{
+        name: "userId",
+        description: "String ID of the user",
+        type: "string",
+        in: "path",
+        required: true
+    },{
+        name: "default",
+        description: "Return only the default bookmark for this user. Defaults to false",
+        type: "boolean",
+        in: "query"
+    },{
+        swaggerName: "defaultBookmarkId",
+        name: "bookmarkId",
+        description: "ID of the new Default Bookmark",
+        type: "integer",
+        in: "formData"
+    }],
     group: [{
         name: "city",
         description: "City in which group is based",

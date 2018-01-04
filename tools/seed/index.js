@@ -10,6 +10,7 @@ var rawDataByIdentifier = {},
 
 function clearDatabase() {
     return Promise.all([
+        model.User.sync({force: true}),
         model.Group.sync({force: true}),
         model.Bookmark.sync({force: true}),
         model.Version.sync({force: true}),

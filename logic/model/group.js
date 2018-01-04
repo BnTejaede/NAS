@@ -19,7 +19,6 @@ module.exports = function (sequelize, DataTypes) {
         Group.hasMany(models.Bookmark, {as: "bookmarks", foreignKey: {allowNull: false}});
     };
 
-    
 
     return Group;
 };

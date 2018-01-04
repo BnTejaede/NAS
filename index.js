@@ -1,5 +1,6 @@
 var express = require('express'),
     app = express(),
+    usersRouter = require("./logic/route/users"),
     groupsRouter = require("./logic/route/groups"),
     figuresRouter = require("./logic/route/figures"),
     bookmarksRouter = require("./logic/route/bookmarks"),
@@ -16,10 +17,15 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use("/group", groupsRouter);
 app.use("/bookmark", bookmarksRouter);
+app.use("/user", usersRouter); //allow user to override a bookmark endpoint
 app.use("/figure", figuresRouter);
 app.use("/version", versionsRouter);
 app.use("/", express.static("form"));
 app.use('/app', express.static('app'));
+
+
+
+
 
 /********************************************
  * TODO Move all of the requests below to routers

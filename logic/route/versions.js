@@ -80,7 +80,7 @@ router.post('/', bodyParser.urlencoded({ extended: true }), function (req, res) 
 
 /**
  * @swagger
- * /version/{bookmarkId}:
+ * /version/{versionId}:
  *   get:
  *     description: Get Version by ID
  *     tags:

@@ -10,6 +10,7 @@ router.use(accessControl);
 router.use("/:group/bookmark", bookmarkRouter);
 
 
+
 /**
  * @swagger
  * /group:
@@ -124,7 +125,7 @@ router.put('/:group', bodyParser.urlencoded({ extended: true }), function (req, 
     }).catch(function (error) {
         res.status(500);
         res.render({error: error});
-    });;
+    });
 });
 
 var ignoredProperties = {
