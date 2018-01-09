@@ -20,7 +20,7 @@ app.use("/bookmark", bookmarksRouter);
 app.use("/user", usersRouter); //allow user to override a bookmark endpoint
 app.use("/figure", figuresRouter);
 app.use("/version", versionsRouter);
-app.use("/", express.static("form"));
+app.use("/", express.static("tools/form"));
 app.use('/app', express.static('app'));
 
 
