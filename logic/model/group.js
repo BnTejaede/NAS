@@ -16,7 +16,8 @@ module.exports = function (sequelize, DataTypes) {
     });
 
     Group.associate = function (models) {
-        Group.hasMany(models.Bookmark, {as: "bookmarks", foreignKey: {allowNull: false}});
+        Group.hasMany(models.Bookmark, {as: "bookmarks"});
+        Group.hasMany(models.User, {as: "users"});
     };
 
 

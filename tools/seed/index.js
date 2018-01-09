@@ -214,5 +214,5 @@ function populateSeedDataNew() {
 }
 
 // clearDatabase();
-// populateSeedData();
+populateSeedData();
 

@@ -28,7 +28,7 @@ router.use("/:bookmark/version", versionRouter);
  *           items:
  *             $ref: '#/definitions/Bookmark'
  *   post:
- *     description: Create a Bookmark
+ *     description: Create a Group Bookmark
  *     tags:
  *      - Bookmarks
  *     parameters:
@@ -45,40 +45,99 @@ router.use("/:bookmark/version", versionRouter);
  *         schema:
  *           type: object
  */
+/**
+ * @swagger
+ * /user/{userId}/bookmark:
+ *   get:
+ *     description: Get all Bookmarks for a User
+ *     tags:
+ *      - Bookmarks
+ *     parameters:
+ *     - $ref: '#/parameters/userId'
+ *     produces:
+ *      - application/json
+ *     responses:
+ *       200:
+ *         description: Returns all Bookmarks for a User
+ *         schema:
+ *           type: array
+ *           items:
+ *             $ref: '#/definitions/Bookmark'
+ *   post:
+ *     description: Create a User Bookmark
+ *     tags:
+ *      - Bookmarks
+ *     parameters:
+ *       - $ref: '#/parameters/userId'
+ *       - $ref: '#/parameters/bookmarkName'
+ *       - $ref: '#/parameters/bookmarkDescription'
+ *     consumes:
+ *      - application/x-www-form-urlencoded
+ *     produces:
+ *      - application/json
+ *     responses:
+ *       200:
+ *         description: Returns ID of new Bookmark
+ *         schema:
+ *           type: object
+ */
 router.get('/', function (req, res) {
-    groupIDForParameters(req.params).then(function (groupID) {
-        model.Bookmark.findAll({where: {groupId: groupID}}).then(function (bookmarks) {
-            res.send({
-                items: bookmarks
-            });
+    var parameters = req.params, 
+        groupID = parameters.group,
+        userID = parameters.user,
+        where;
+    
+    if (groupID) {
+        where = {
+            groupId: groupID
+        };
+    } else if (userID) {
+        where = {
+            userId: userID
+        };
+    }
+
+    model.Bookmark.findAll({where: where}).then(function (bookmarks) {
+        res.send({
+            items: bookmarks
         });
     });
-    
 });
 
 router.post('/', bodyParser.urlencoded({ extended: true }), function (req, res) {
-    var rawBookmark = mapProperties(req.body),
-        bookmark;
-
-    groupIDForParameters(req.params).then(function (groupID) {
-        rawBookmark.groupId = groupID;
-        rawBookmark.versions = [{name: "Initial"}];
+    var parameters = req.params,
+        rawBookmark = mapProperties(req.body),
+        groupID = parameters.group,
+        userID = parameters.user,
+        bookmark, where, response;
     
-        model.Bookmark.create(rawBookmark, {
-            include: [{
-                as: "versions",
-                model: model.Version
-            }]
-        }).then(function (bookmark) {
-            res.send({
-                groupID: groupID,
-                id: bookmark.id
-            });
-        }).catch(function (error) {
-            res.status(500);
-            res.send(error);
-        });
+    if (groupID) {
+        rawBookmark.groupId = groupID;
+        response = {
+            groupID: groupID
+        };
+    } else if (userID) {
+        rawBookmark.userId = userID;
+        response = {
+            userID: userID
+        };
+    }
+
+    rawBookmark.versions = [{name: "Initial"}];
+
+    model.Bookmark.create(rawBookmark, {
+        include: [{
+            as: "versions",
+            model: model.Version
+        }]
+    }).then(function (bookmark) {
+        response.id = bookmark.id;
+        res.send(response);
+    }).catch(function (error) {
+        res.status(500);
+        res.send(error);
     });
+
 });
 
 
@@ -172,45 +231,6 @@ var ignoredProperties = {
     groupID: true,
     userID: true
 };
-
-function groupIDForParameters(parameters) {
-    var groupID = parameters.group,
-        userID = parameters.user;
-    
-    if (groupID) {
-        return Promise.resolve(groupID);
-    } else if (userID) {
-        return getGroupForUserID(userID).then(function (group) {
-            return group.id;
-        });
-    }
-}
-
-function getGroupForUserID (userID) {
-    return model.User.findOrCreate({where: {id: userID}}).then(function (result) {
-        var user = result[0],
-            hasGroup = typeof user.groupId === "number";
-        return hasGroup ? user.getGroup() : createGroupForUser(user);
-    });
-}
-
-function createGroupForUser(user) {
-    var rawGroup = makeDefaultGroup(user.id),
-        group;
-    return model.Group.create(rawGroup).then(function (result) {
-        group = result;
-        return user.setGroup(group);
-    }).then(function () {
-        return group;
-    });
-}
-
-function makeDefaultGroup(username) {
-    return {
-        name: "Owned by " + username,
-        description: "Created for the purpose of supplying " + username + " with personal bookmarks"
-    }
-}
 
 function mapProperties(object) {
     var keys = Object.keys(object),

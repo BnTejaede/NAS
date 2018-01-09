@@ -9,6 +9,7 @@ module.exports = function (sequelize, DataTypes) {
     User.associate = function (models) {
         User.belongsTo(models.Group);
         User.belongsTo(models.Bookmark, {as: "defaultBookmark"});
+        User.hasMany(models.Bookmark, {as: "bookmarks"});
     };
 
     return User;

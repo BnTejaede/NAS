@@ -40,46 +40,11 @@ router.get('/:user/group', function (req, res) {
 
 /**
  * @swagger
- * /user/{userId}/bookmark:
- *   get:
- *     description: Get a Bookmarks by User ID.
- *     tags:
- *      - Users
- *     parameters:
- *       - $ref: '#/parameters/userId'
- *     produces:
- *      - application/json
- *     responses:
- *       200:
- *         description: Returns an array of Bookmarks
- *         schema:
- *           type: array
- *           items:
- *             $ref: '#/definitions/Bookmark'
- */
-router.get('/:user/bookmark', function (req, res) {
-    var userID = req.params.user,
-        user, hasGroup;
-
-    return getGroupForUserID(userID).then(function (group) {
-        return group.getBookmarks(where);
-    }).then(function (bookmarks) {
-        res.send({
-            items: bookmarks
-        });
-    }).catch(function (error) {
-        res.status(500);
-        res.render({error: error});
-    });
-});
-
-/**
- * @swagger
- * /user/{userId}/bookmark/default:
+ * /user/{userId}/defaultBookmark:
  *   get:
  *     description: Get the default Bookmark for this User
  *     tags:
- *      - Users
+ *      - Bookmarks
  *     parameters:
  *       - $ref: '#/parameters/userId'
  *     produces:
@@ -94,7 +59,7 @@ router.get('/:user/bookmark', function (req, res) {
  *   put:
  *     description: Set default bookmark for user.
  *     tags:
- *      - Users
+ *      - Bookmarks
  *     parameters:
  *       - $ref: '#/parameters/userId'
  *       - $ref: '#/parameters/defaultBookmarkId'
@@ -111,20 +76,18 @@ router.get('/:user/defaultBookmark', function (req, res) {
         user;
     return model.User.findOrCreate({where: {id: userID}}).then(function (result) {
         user = result[0];
-        hasGroup = typeof user.groupId === "number";
-        return hasGroup ? user.getGroup() : createGroupForUser(user);
-    }).then(function (group) {
-        return group.getBookmarks({
+        return user.defaultBookmarkId === null ? [] : model.Bookmark.find({
             where: {
                 id: user.defaultBookmarkId
             }
         });
-    }).then(function (bookmarks) {
-        var response = bookmarks[0] || {id: null};
+    }).then(function (bookmark) {
+        var response = bookmark || {id: null};
         res.send(response);
     }).catch(function (error) {
+        console.log(error);
         res.status(500);
-        res.render({error: error});
+        res.send({error: error});
     });
 });
 
@@ -134,10 +97,7 @@ router.put('/:user/defaultBookmark', bodyParser.urlencoded({ extended: true }), 
         where = {}, user, hasGroup;
 
     return model.User.findOrCreate({where: {id: userID}}).then(function (result) {
-            user = result[0];
-            hasGroup = typeof user.groupId === "number";
-            return hasGroup ? user.getGroup() : createGroupForUser(user);
-    }).then(function (group) {
+        user = result[0];
         user.defaultBookmarkId = newDefault;
         return user.save();
     }).then(function (bookmarks) {
@@ -147,7 +107,7 @@ router.put('/:user/defaultBookmark', bodyParser.urlencoded({ extended: true }), 
          });
     }).catch(function (error) {
         res.status(500);
-        res.render({error: error});
+        res.send({error: error});
     });
 });
 

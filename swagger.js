@@ -117,8 +117,20 @@ module.exports = (function () {
         if (error) throw error;
         console.log('Swagger Schema saved to ./api/swagger.json saved!');
     });
+    sortPaths(spec);
     return spec;
 })();
+
+function sortPaths(spec) {
+    var unordered = spec.paths,
+        paths = Object.keys(spec.paths);
+
+    paths.sort();
+    spec.paths = {};
+    paths.forEach(function (path) {
+        spec.paths[path] = unordered[path];
+    });
+}
 
 function mapParametersForType(parameters, typeName) {
     typeName = typeName.toLowerCase();
