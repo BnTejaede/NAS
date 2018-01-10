@@ -76,7 +76,7 @@ router.get('/:user/defaultBookmark', function (req, res) {
         user;
     return model.User.findOrCreate({where: {id: userID}}).then(function (result) {
         user = result[0];
-        return user.defaultBookmarkId === null ? [] : model.Bookmark.find({
+        return user.defaultBookmarkId === null ? null : model.Bookmark.find({
             where: {
                 id: user.defaultBookmarkId
             }
